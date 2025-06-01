@@ -1,13 +1,15 @@
 <?php
 
 namespace App\Http\Controllers\Auth;
-
+use Illuminate\Support\Str;
 use App\Http\Controllers\Controller;
+use App\Models\Persona;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Inertia\Inertia;
@@ -30,22 +32,49 @@ class RegisteredUserController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
+        logger()->debug('Datos recibidos:', $request->all());
         $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
+            // Datos de la persona
+            'nombre' => 'required|string|max:255',
+            'apellido' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:personas,email',
+            'contacto' => 'required|string|max:50', 
+            'genero' => 'required|in:masculino,femenino', 
+
+            // Datos del usuario
+            'cedula' => 'required|string|max:20|unique:users,cedula',
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
+        DB::beginTransaction();
 
-        event(new Registered($user));
+        try {
+            $persona = Persona::create([
+                'nombre' => $request->nombre,
+                'apellido' => $request->apellido,
+                'email' => $request->email,
+                'contacto' => $request->contacto,
+                'genero' => $request->genero,
+            ]);
 
-        Auth::login($user);
+            $user = User::create([
+                'cedula' => $request->cedula,
+                'password' => Hash::make($request->password),
+                'status' => 'activo',
+                'isAdmind' => false,
+                'persona_id' => $persona->id,
+                'remember_token' => Str::random(60),
+            ]);
 
-        return to_route('dashboard');
+            event(new Registered($user));
+            Auth::login($user);
+            DB::commit();
+
+            return to_route('dashboard');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->withErrors(['error' => 'Error al registrar usuario: ' . $e->getMessage()]);
+        }
     }
 }

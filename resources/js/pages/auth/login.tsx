@@ -11,7 +11,7 @@ import { Label } from '@/components/ui/label';
 import AuthLayout from '@/layouts/auth-layout';
 
 type LoginForm = {
-    email: string;
+    cedula: string;
     password: string;
     remember: boolean;
 };
@@ -23,7 +23,7 @@ interface LoginProps {
 
 export default function Login({ status, canResetPassword }: LoginProps) {
     const { data, setData, post, processing, errors, reset } = useForm<Required<LoginForm>>({
-        email: '',
+        cedula: '',
         password: '',
         remember: false,
     });
@@ -42,19 +42,19 @@ export default function Login({ status, canResetPassword }: LoginProps) {
             <form className="flex flex-col gap-6" onSubmit={submit}>
                 <div className="grid gap-6">
                     <div className="grid gap-2">
-                        <Label htmlFor="email">Email address</Label>
+                        <Label htmlFor="cedula">Cedula</Label>
                         <Input
-                            id="email"
-                            type="email"
+                            id="cedula"
+                            type="text"
                             required
                             autoFocus
                             tabIndex={1}
-                            autoComplete="email"
-                            value={data.email}
-                            onChange={(e) => setData('email', e.target.value)}
-                            placeholder="email@example.com"
+                            autoComplete="cedula"
+                            value={data.cedula}
+                            onChange={(e) => setData('cedula', e.target.value)}
+                            placeholder="tu cedula"
                         />
-                        <InputError message={errors.email} />
+                        <InputError message={errors.cedula} />
                     </div>
 
                     <div className="grid gap-2">

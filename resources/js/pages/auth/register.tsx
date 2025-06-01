@@ -10,24 +10,34 @@ import { Label } from '@/components/ui/label';
 import AuthLayout from '@/layouts/auth-layout';
 
 type RegisterForm = {
-    name: string;
+    nombre: string;
+    apellido: string;
     email: string;
+    contacto: string;
+    genero: string;
+    cedula: string;
     password: string;
     password_confirmation: string;
 };
 
 export default function Register() {
     const { data, setData, post, processing, errors, reset } = useForm<Required<RegisterForm>>({
-        name: '',
+        nombre: '',
+        apellido: '',
         email: '',
+        contacto: '',
+        genero: '',
+        cedula: '',
         password: '',
         password_confirmation: '',
     });
-
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
         post(route('register'), {
             onFinish: () => reset('password', 'password_confirmation'),
+            onError: (errors) => {
+                console.log('Registration errors:', errors);
+            },
         });
     };
 
@@ -37,20 +47,82 @@ export default function Register() {
             <form className="flex flex-col gap-6" onSubmit={submit}>
                 <div className="grid gap-6">
                     <div className="grid gap-2">
-                        <Label htmlFor="name">Name</Label>
+                        {/* Nombre */}
+                        <Label htmlFor="nombre">Nombre</Label>
                         <Input
-                            id="name"
+                            id="nombre"
                             type="text"
                             required
-                            autoFocus
                             tabIndex={1}
                             autoComplete="name"
-                            value={data.name}
-                            onChange={(e) => setData('name', e.target.value)}
+                            value={data.nombre}
+                            onChange={(e) => setData('nombre', e.target.value)}
                             disabled={processing}
-                            placeholder="Full name"
+                            placeholder="Nombre"
                         />
-                        <InputError message={errors.name} className="mt-2" />
+                        <InputError message={errors.nombre} className="mt-2" />
+
+                        {/* Apellido */}
+                        <Label htmlFor="apellido">Apellido</Label>
+                        <Input
+                            id="apellido"
+                            type="text"
+                            required
+                            tabIndex={2}
+                            autoComplete="family-name"
+                            value={data.apellido}
+                            onChange={(e) => setData('apellido', e.target.value)}
+                            disabled={processing}
+                            placeholder="Apellido"
+                        />
+                        <InputError message={errors.apellido} className="mt-2" />
+
+                        {/* Cédula */}
+                        <Label htmlFor="cedula">Cédula</Label>
+                        <Input
+                            id="cedula"
+                            type="text"
+                            required
+                            tabIndex={3}
+                            autoComplete="off"
+                            value={data.cedula}
+                            onChange={(e) => setData('cedula', e.target.value)}
+                            disabled={processing}
+                            placeholder="Cédula"
+                        />
+                        <InputError message={errors.cedula} className="mt-2" />
+
+                        {/* Contacto */}
+                        <Label htmlFor="contacto">Contacto</Label>
+                        <Input
+                            id="contacto"
+                            type="text"
+                            required
+                            tabIndex={4}
+                            autoComplete="tel"
+                            value={data.contacto}
+                            onChange={(e) => setData('contacto', e.target.value)}
+                            disabled={processing}
+                            placeholder="Número de contacto"
+                        />
+                        <InputError message={errors.contacto} className="mt-2" />
+
+                        {/* Género con select */}
+                        <Label htmlFor="genero">Género</Label>
+                        <select
+                            id="genero"
+                            value={data.genero}
+                            onChange={(e) => setData('genero', e.target.value)}
+                            disabled={processing}
+                            className="rounded border px-3 py-2 focus:outline-none"
+                            tabIndex={5}
+                            required
+                        >
+                            <option value="">Selecciona una opción</option>
+                            <option value="masculino">Masculino</option>
+                            <option value="femenino">Femenino</option>
+                        </select>
+                        <InputError message={errors.genero} className="mt-2" />
                     </div>
 
                     <div className="grid gap-2">

@@ -20,14 +20,14 @@ export interface User {
     persona_id: number;
     created_at: string;
     updated_at: string;
-    persona: Persona;
+    persona: Persona; // Hacerlo opcional y nullable
     avatar?: string;
     nombre_completo?: string;
     email?: string;
 }
 
 export interface Auth {
-    user?: User | null; // Hacerlo opcional y nullable
+    user: User; // Hacerlo opcional y nullable
 }
 
 export interface SharedData {

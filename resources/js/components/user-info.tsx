@@ -10,10 +10,10 @@ interface UserInfoProps {
 
 export function UserInfo({ user, showEmail = false, className = '' }: UserInfoProps) {
     const getInitials = useInitials();
-
+    console.log('UserInfo', user);
     // Manejo seguro de nombres
-    const fullName = user.nombre_completo || (user.persona ? `${user.persona.nombre} ${user.persona.apellido}` : '');
-    const email = user.email || user.persona?.email || '';
+    const fullName = user.persona?.nombre || (user.persona ? `${user.persona.nombre} ${user.persona.apellido}` : 'xd');
+    const email = user.persona?.email || '';
     const avatarAlt = fullName || user.persona?.nombre || '';
 
     // Genera las iniciales como string

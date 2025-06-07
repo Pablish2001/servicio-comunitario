@@ -1,56 +1,19 @@
-import { NavFooter } from '@/components/nav-footer';
-import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
-import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
-import { type NavItem } from '@/types';
-import { Link } from '@inertiajs/react';
-import { BookOpen, Folder, LayoutGrid } from 'lucide-react';
-import AppLogo from './app-logo';
-
-const mainNavItems: NavItem[] = [
-    {
-        title: 'Dashboard',
-        href: '/dashboard',
-        icon: LayoutGrid,
-    },
-];
-
-const footerNavItems: NavItem[] = [
-    {
-        title: 'Repository',
-        href: 'https://github.com/laravel/react-starter-kit',
-        icon: Folder,
-    },
-    {
-        title: 'Documentation',
-        href: 'https://laravel.com/docs/starter-kits#react',
-        icon: BookOpen,
-    },
-];
 
 export function AppSidebar() {
     return (
-        <Sidebar collapsible="icon" variant="inset">
-            <SidebarHeader>
-                <SidebarMenu>
-                    <SidebarMenuItem>
-                        <SidebarMenuButton size="lg" asChild>
-                            <Link href="/dashboard" prefetch>
-                                <AppLogo />
-                            </Link>
-                        </SidebarMenuButton>
-                    </SidebarMenuItem>
-                </SidebarMenu>
-            </SidebarHeader>
-
-            <SidebarContent>
-                <NavMain items={mainNavItems} />
-            </SidebarContent>
-
-            <SidebarFooter>
-                <NavFooter items={footerNavItems} className="mt-auto" />
+        <div className="items-cente flex h-full w-full justify-between">
+            <div className="mr-4 flex items-center gap-4 text-xl font-bold text-white">
+                <img src="/hospital-header-image.png" alt="hospital header image" className="w-15" />
+                <div className="flex flex-col gap-2">
+                    <p>JORNADA LABORAL</p>
+                    <p className="rounded-full border border-white bg-[#1F9AFF] px-6 py-1 text-xs text-white">Sábado 29 de Marzo 2025 - 19:47</p>
+                </div>
+            </div>
+            {/* <div className="flex-1"></div> */}
+            <div className="flex items-center">
                 <NavUser />
-            </SidebarFooter>
-        </Sidebar>
+            </div>
+        </div>
     );
 }

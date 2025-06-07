@@ -6,9 +6,10 @@ interface UserInfoProps {
     user: User;
     showEmail?: boolean;
     className?: string;
+    textColor?: 'white' | 'black';
 }
 
-export function UserInfo({ user, showEmail = false, className = '' }: UserInfoProps) {
+export function UserInfo({ user, showEmail = false, className = '', textColor = 'white' }: UserInfoProps) {
     const getInitials = useInitials();
     console.log('UserInfo', user);
     // Manejo seguro de nombres
@@ -20,14 +21,22 @@ export function UserInfo({ user, showEmail = false, className = '' }: UserInfoPr
     const initials = getInitials(fullName);
 
     return (
-        <div className={`flex items-center gap-3 ${className}`}>
-            <Avatar className="h-8 w-8 overflow-hidden rounded-full">
+        <div className={`flex items-center gap-2 ${className}`}>
+            <Avatar className="h-7 w-7 overflow-hidden rounded-full border-2 border-white">
                 <AvatarImage src={user.avatar} alt={avatarAlt} />
-                <AvatarFallback className="rounded-lg bg-neutral-200 text-black dark:bg-neutral-700 dark:text-white">{initials}</AvatarFallback>
+                <AvatarFallback className="bg-white text-black">
+                    {initials}
+                </AvatarFallback>
             </Avatar>
-            <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-medium">{fullName}</span>
-                {showEmail && email && <span className="text-muted-foreground truncate text-xs">{email}</span>}
+            <div className="grid flex-1 text-left">
+                <span className={`truncate text-sm font-medium ${textColor === 'black' ? 'text-black' : 'text-white'}`}>
+                    {fullName}
+                </span>
+                {showEmail && email && (
+                    <span className={`truncate text-xs ${textColor === 'black' ? 'text-black/80' : 'text-white/80'}`}>
+                        {email}
+                    </span>
+                )}
             </div>
         </div>
     );

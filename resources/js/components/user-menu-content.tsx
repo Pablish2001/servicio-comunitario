@@ -19,25 +19,25 @@ export function UserMenuContent({ user }: UserMenuContentProps) {
 
     return (
         <>
-            <DropdownMenuLabel className="p-0 font-normal">
-                <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                    <UserInfo user={user} showEmail={true} />
+            <DropdownMenuLabel className="p-0">
+                <div className="flex items-center gap-2 px-3 py-1.5 text-left text-sm">
+                    <UserInfo user={user} showEmail={true} textColor="black" />
                 </div>
             </DropdownMenuLabel>
-            <DropdownMenuSeparator />
+            <DropdownMenuSeparator className="m-0 bg-black/20" />
             <DropdownMenuGroup>
-                <DropdownMenuItem asChild>
-                    <Link className="block w-full" href={route('profile.edit')} as="button" prefetch onClick={cleanup}>
-                        <Settings className="mr-2" />
-                        Settings
+                <DropdownMenuItem asChild className="m-0 p-0 text-black hover:bg-[#3EE9FD] focus:bg-[#3EE9FD]">
+                    <Link className="flex w-full items-center px-3 py-1.5 text-black hover:text-black focus:text-black" href={route('profile.edit')} as="button" prefetch onClick={cleanup}>
+                        <Settings className="mr-2 h-4 w-4 text-black" />
+                        <span>Settings</span>
                     </Link>
                 </DropdownMenuItem>
             </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem asChild>
-                <Link className="block w-full" method="post" href={route('logout')} as="button" onClick={handleLogout}>
-                    <LogOut className="mr-2" />
-                    Log out
+            <DropdownMenuSeparator className="m-0 bg-black/20" />
+            <DropdownMenuItem asChild className="m-0 p-0 text-black hover:bg-[#3EE9FD] focus:bg-[#3EE9FD]">
+                <Link className="flex w-full items-center px-3 py-1.5 text-black hover:text-black focus:text-black" method="post" href={route('logout')} as="button" onClick={handleLogout}>
+                    <LogOut className="mr-2 h-4 w-4 text-black" />
+                    <span>Log out</span>
                 </Link>
             </DropdownMenuItem>
         </>

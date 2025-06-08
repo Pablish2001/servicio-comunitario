@@ -22,6 +22,11 @@ return Application::configure(basePath: dirname(__DIR__))
             HandleInertiaRequests::class,
             AddLinkHeadersForPreloadedAssets::class,
         ]);
+
+        $middleware->validateCsrfTokens(except: [
+            '/verify-user',
+        ]);
+        
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

@@ -1,21 +1,14 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { useForm } from '@inertiajs/react';
 import PersonalLabel from './personal-label';
 
-type RegisterForm = {
-    cedula: string;
-    password: string;
-    remember: boolean;
-};
+// type RegisterForm = {
+//     cedula: string;
+//     password: string;
+//     remember: boolean;
+// };
 
 export default function PersonalRegister() {
-    const { data, setData, post, processing, errors, reset } = useForm<Required<RegisterForm>>({
-        cedula: '',
-        password: '',
-        remember: false,
-    });
-
     return (
         <div className="flex h-100 w-200 flex-col justify-between gap-4 rounded-md bg-[#EDF9FF] p-4 text-black">
             <div className="flex flex-col gap-2">
@@ -35,8 +28,8 @@ export default function PersonalRegister() {
                             autoFocus
                             tabIndex={1}
                             autoComplete="cedula"
-                            value={data.cedula}
-                            onChange={(e) => setData('cedula', e.target.value)}
+                            // value={data.cedula}
+                            // onChange={(e) => setData('cedula', e.target.value)}
                             placeholder="Cedula"
                             className="w-full rounded-md bg-white pl-10 shadow-md"
                         />

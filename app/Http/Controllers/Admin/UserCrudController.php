@@ -54,15 +54,40 @@ class UserCrudController extends CrudController
      * @return void
      */
     protected function setupCreateOperation()
-    {
-        CRUD::setValidation(UserRequest::class);
-        CRUD::setFromDb(); // set fields from db columns.
+{
+    CRUD::setValidation(UserRequest::class);
 
-        /**
-         * Fields can be defined using the fluent syntax:
-         * - CRUD::field('price')->type('number');
-         */
-    }
+    CRUD::addField([
+        'name' => 'cedula',
+        'label' => 'Cédula',
+        'type' => 'text',
+    ]);
+
+    CRUD::addField([
+        'name' => 'password',
+        'label' => 'Contraseña',
+        'type' => 'password',
+    ]);
+
+    CRUD::addField([
+        'name' => 'status',
+        'label' => 'Estado',
+        'type' => 'select_from_array',
+        'options' => [
+            'activo' => 'Activo',
+            'inactivo' => 'Inactivo',
+        ],
+        'allows_null' => false,
+        'default' => 'activo',
+    ]);
+
+    CRUD::addField([
+        'name' => 'isAdmind',
+        'label' => '¿Es administrador?',
+        'type' => 'checkbox',
+    ]);
+
+}
 
     /**
      * Define what happens when the Update operation is loaded.

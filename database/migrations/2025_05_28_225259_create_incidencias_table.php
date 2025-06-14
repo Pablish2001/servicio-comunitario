@@ -16,9 +16,9 @@ return new class extends Migration
             $table->timestamps();
             $table->enum('status', ['salida', 'entrada'])->default('entrada');
             $table->string('motivo')->nullable();
-            $table->unsignedBigInteger('jornada_users_id');
+            $table->unsignedBigInteger('jornada_user_id');
             
-            $table->foreign('jornada_users_id')->references('id')->on('jornada_users')->onDelete('cascade');
+            $table->foreign('jornada_user_id')->references('id')->on('jornada_user')->onDelete('cascade');
         });
     }
 

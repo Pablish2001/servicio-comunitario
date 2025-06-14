@@ -11,10 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('jornada_users', function (Blueprint $table) {
+        Schema::create('jornada_user', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
             $table->enum('status', ['presente', 'ausente'])->default('presente');
+            $table->dateTime('assigned_at');
 
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('jornada_id');
@@ -29,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('jornada_users');
+        Schema::dropIfExists('jornada_user');
     }
 };

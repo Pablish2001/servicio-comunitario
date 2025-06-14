@@ -6,6 +6,7 @@ use Backpack\CRUD\app\Models\Traits\CrudTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class User extends Authenticatable
 {
@@ -58,4 +59,25 @@ class User extends Authenticatable
     {
         return 'cedula';
     }
+
+    /**
+     * Get the specific assignments (jornada_user records) for this user.
+     * This is the bridge to access jornadas with pivot data.
+     */
+    public function jornadaUsers(): HasMany
+    {
+        return $this->hasMany(JornadaUser::class);
+    }
+
+    /**
+     * Get the jornadas that are assigned to this user through the pivot table.
+     * This is the many-to-many relationship, accessing the pivot table's extra attributes.
+     */
+    public function jornadas()
+    {
+        return $this->belongsToMany(Jornada::class, 'jornada_user')
+                    ->withPivot('id', 'fecha', 'status') 
+                    ->using(JornadaUser::class); 
+    }
+
 }

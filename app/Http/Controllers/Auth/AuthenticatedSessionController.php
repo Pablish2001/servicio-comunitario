@@ -45,6 +45,14 @@ class AuthenticatedSessionController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
+        // Eliminar jornada pendiente de la sede 1 antes de cerrar sesión
+        $jornadaPendiente = \App\Models\Jornada::where('sede_id', 1)->whereNull('fecha_inicio')->first();
+        if ($jornadaPendiente) {
+            // Eliminar relaciones en tabla pivote primero
+            $jornadaPendiente->users()->detach();
+            $jornadaPendiente->delete();
+        }
+
         Auth::guard('web')->logout();
 
         $request->session()->invalidate();

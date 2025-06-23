@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('jornada_users', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->enum('status', ['presente', 'ausente'])->default('presente');
+            $table->enum('status', ['pendiente', 'presente', 'ausente'])->default('presente');
+            $table->timestamp('joined_at')->nullable();
 
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('jornada_id');

@@ -1,31 +1,108 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { useForm } from '@inertiajs/react';
+import { router, useForm, usePage } from '@inertiajs/react';
+import { FormEventHandler, useState } from 'react';
 import PersonalLabel from './personal-label';
+
+// ...otros imports
 
 type RegisterForm = {
     cedula: string;
     password: string;
-    remember: boolean;
+};
+
+type PersonalItem = {
+    cedula: number;
+    persona: {
+        nombre: string;
+        apellido: string;
+    };
+};
+
+type Jornada = {
+    id: number;
+    fecha_inicio: string | null;
 };
 
 export default function PersonalRegister() {
-    const { data, setData, post, processing, errors, reset } = useForm<Required<RegisterForm>>({
+    const form = useForm<RegisterForm>({
         cedula: '',
         password: '',
-        remember: false,
     });
+
+    const [generalError, setGeneralError] = useState('');
+
+    const { auth } = usePage().props as any;
+    const [personal, setPersonal] = useState<any[]>(() => {
+        // Al cargar, agrega automáticamente al usuario autenticado si no está
+        return auth && auth.user ? [{
+            id: auth.user.id,
+            cedula: auth.user.cedula,
+            persona: auth.user.persona
+        }] : [];
+    });
+    // Agregar usuario por cédula y contraseña (simula validación local, o puedes hacer petición al backend para validar)
+    const submit: FormEventHandler = async (e) => {
+        e.preventDefault();
+        setGeneralError('');
+        if (personal.find(p => p.cedula === form.data.cedula)) {
+            setGeneralError('Usuario ya está en la lista');
+            return;
+        }
+        // Validar contra el backend y obtener datos reales
+        const { validarCredenciales } = await import('../utils/api');
+        const result = await validarCredenciales(form.data.cedula, form.data.password);
+        if (result.success) {
+            setPersonal([...personal, {
+                id: result.user.id,
+                cedula: result.user.cedula,
+                persona: {
+                    nombre: result.user.persona.nombre,
+                    apellido: result.user.persona.apellido
+                }
+            }]);
+            form.reset();
+        } else {
+            setGeneralError(result.message || 'Credenciales inválidas');
+        }
+    };
+
+    // Eliminar usuario de la lista temporal
+    const eliminarPersonal = (cedula: number) => {
+        setPersonal(personal.filter(p => p.cedula !== cedula));
+    };
+
+    // Iniciar jornada: envía la lista al backend
+    const iniciarJornada = () => {
+        const ids = personal.map(p => p.id);
+        console.log('Enviando user_ids:', ids);
+        router.post(route('jornada.iniciar'), {
+            user_ids: ids
+        }, {
+            onSuccess: (page) => {
+                alert('¡Jornada iniciada correctamente!');
+                console.log('Respuesta backend:', page);
+                window.location.href = '/atencion-paciente';
+            },
+            onError: (errors) => {
+                alert('Error al iniciar jornada: ' + JSON.stringify(errors));
+                console.error('Errores backend:', errors);
+            }
+        });
+    };
+
+    const mostrarPersonal = personal;
+
 
     return (
         <div className="flex h-100 w-200 flex-col justify-between gap-4 rounded-md bg-[#EDF9FF] p-4 text-black">
             <div className="flex flex-col gap-2">
                 <div className="flex items-center gap-1">
-                    <div>
-                        <img src="/person-icon-blue.png" alt="person icon blue" className="w-8" />
-                    </div>
+                    <img src="/person-icon-blue.png" alt="person icon blue" className="w-8" />
                     <h2 className="text-xl font-bold text-[#0E469A]">Registro de personal de Salud</h2>
                 </div>
-                <form action="" className="grid w-full grid-cols-[1fr_1fr_auto] gap-4">
+
+                <form onSubmit={submit} className="grid w-full grid-cols-[1fr_1fr_auto] gap-4">
                     <div className="relative">
                         <img src="/search-grey.png" alt="search icon grey" className="absolute translate-x-2 translate-y-1.5" />
                         <Input
@@ -33,39 +110,55 @@ export default function PersonalRegister() {
                             type="text"
                             required
                             autoFocus
-                            tabIndex={1}
                             autoComplete="cedula"
-                            value={data.cedula}
-                            onChange={(e) => setData('cedula', e.target.value)}
-                            placeholder="Cedula"
+                            value={form.data.cedula}
+                            onChange={(e) => form.setData('cedula', e.target.value)}
+                            placeholder="Cédula"
                             className="w-full rounded-md bg-white pl-10 shadow-md"
                         />
                     </div>
+
                     <div className="relative">
-                        <Input placeholder="Contraseña" className="w-full rounded-md bg-white pl-10 shadow-md" />
+                        <Input
+                            id="password"
+                            type="password"
+                            placeholder="Contraseña"
+                            value={form.data.password}
+                            onChange={(e) => form.setData('password', e.target.value)}
+                            className="w-full rounded-md bg-white pl-10 shadow-md"
+                        />
                         <img src="/password-icon-grey.png" alt="password icon grey" className="absolute top-1.5 left-2" />
                     </div>
-                    <Button variant="default" className="h-10 w-10 shrink-0">
+
+                    <Button variant="default" type="submit" className="h-10 w-10 shrink-0">
                         <span className="text-xl">+</span>
                     </Button>
+                    {form.errors.password && <p className="mt-1 text-sm text-red-600">{form.errors.password}</p>}
                 </form>
             </div>
+
             <div className="flex flex-col gap-2">
                 <div className="flex items-center gap-1">
-                    <div className="w-8">
-                        <img src="/person-icon-blue.png" alt="person icon blue" />
-                    </div>
+                    <img src="/person-icon-blue.png" alt="person icon blue" className="w-8" />
                     <h2 className="text-xl font-bold text-[#0E469A]">Personal Registrado</h2>
                 </div>
-                <form action="" className="flex flex-col gap-4">
+
+                <form className="flex flex-col gap-4">
                     <ul className="flex flex-col gap-4">
-                        <PersonalLabel name="JEINDER ABANERO" />
-                        <PersonalLabel name="PABLO JIMENEZ" />
+                        {mostrarPersonal.map((p: any) => (
+                            <PersonalLabel
+                                key={p.cedula}
+                                name={`${p.persona.nombre} ${p.persona.apellido}`}
+                                userId={p.cedula}
+                                onRemove={eliminarPersonal}
+                            />
+                        ))}
                     </ul>
-                    <Button variant="default" className="self-center font-bold">
-                        INICIAR JORNADA
-                    </Button>
                 </form>
+
+                {mostrarPersonal.length > 0 && (
+                     <Button onClick={iniciarJornada}>INICIAR JORNADA</Button>
+                )}
             </div>
         </div>
     );

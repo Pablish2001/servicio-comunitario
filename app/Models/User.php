@@ -58,4 +58,12 @@ class User extends Authenticatable
     {
         return 'cedula';
     }
+
+    public function jornadas()
+    {
+        return $this->belongsToMany(Jornada::class, 'jornada_users')
+                    ->withTimestamps()
+                    ->withPivot('status');
+    }
+
 }

@@ -32,4 +32,8 @@ class Jornada extends Model
                     ->withPivot('status', 'joined_at')
                     ->withTimestamps();
     }
+    public function acciones()
+{
+    return $this->hasMany(JornadaUserAccion::class);
+}
 }

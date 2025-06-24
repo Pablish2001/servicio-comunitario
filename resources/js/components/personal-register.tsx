@@ -3,6 +3,7 @@ import { Input } from '@/components/ui/input';
 import { router, useForm, usePage } from '@inertiajs/react';
 import { FormEventHandler, useState } from 'react';
 import PersonalLabel from './personal-label';
+import React from "react";
 
 // ...otros imports
 
@@ -31,6 +32,15 @@ export default function PersonalRegister() {
     });
 
     const [generalError, setGeneralError] = useState('');
+    const [showToast, setShowToast] = useState(false);
+
+    // Oculta el error automáticamente después de 3 segundos
+    React.useEffect(() => {
+        if (generalError) {
+            const timer = setTimeout(() => setGeneralError(''), 3000);
+            return () => clearTimeout(timer);
+        }
+    }, [generalError]);
 
     const { auth } = usePage().props as any;
     const [personal, setPersonal] = useState<any[]>(() => {
@@ -75,17 +85,22 @@ export default function PersonalRegister() {
     // Iniciar jornada: envía la lista al backend
     const iniciarJornada = () => {
         const ids = personal.map(p => p.id);
-        console.log('Enviando user_ids:', ids);
+        // Obtener fecha y hora en UTC en formato ISO (YYYY-MM-DDTHH:mm)
+        const now = new Date();
+        const fecha_inicio = now.toISOString().slice(0, 16); // UTC, formato compatible con backend
         router.post(route('jornada.iniciar'), {
-            user_ids: ids
+            user_ids: ids,
+            fecha_inicio
         }, {
             onSuccess: (page) => {
-                alert('¡Jornada iniciada correctamente!');
-                console.log('Respuesta backend:', page);
-                window.location.href = '/atencion-paciente';
+                setShowToast(true);
+                setTimeout(() => {
+                    setShowToast(false);
+                    window.location.href = '/atencion-paciente';
+                }, 2000);
             },
             onError: (errors) => {
-                alert('Error al iniciar jornada: ' + JSON.stringify(errors));
+                setGeneralError('Error al iniciar jornada: ' + JSON.stringify(errors));
                 console.error('Errores backend:', errors);
             }
         });
@@ -96,6 +111,18 @@ export default function PersonalRegister() {
 
     return (
         <div className="flex h-100 w-200 flex-col justify-between gap-4 rounded-md bg-[#EDF9FF] p-4 text-black">
+            {/* Toast de éxito */}
+            {showToast && (
+                <div className="fixed top-6 right-6 z-50 rounded-lg bg-green-500 px-6 py-3 text-white shadow-lg animate-fade-in">
+                    Jornada creada exitosamente
+                </div>
+            )}
+            {/* Banner de error */}
+            {generalError && (
+                <div className="mb-4 rounded-md bg-red-100 border border-red-400 px-4 py-2 text-red-800 font-semibold">
+                    {generalError}
+                </div>
+            )}
             <div className="flex flex-col gap-2">
                 <div className="flex items-center gap-1">
                     <img src="/person-icon-blue.png" alt="person icon blue" className="w-8" />

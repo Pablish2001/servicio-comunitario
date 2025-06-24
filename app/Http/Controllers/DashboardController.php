@@ -12,8 +12,18 @@ class DashboardController extends Controller
     {
         $user = Auth::user()->load('persona');
 
-        // No crear jornada pendiente automáticamente, ni agregar usuarios a ninguna jornada.
-        // Solo pasar el usuario autenticado y una lista vacía de personal.
+        // Buscar si el usuario tiene una jornada activa (por ejemplo, iniciada hoy y no cerrada)
+        $jornadaActiva = Jornada::whereDate('fecha_inicio', today())
+            ->whereHas('users', function ($q) use ($user) {
+                $q->where('users.id', $user->id);
+            })
+            ->whereNull('fecha_fin') // Si tienes un campo de cierre, si no, solo por fecha
+            ->first();
+
+        if ($jornadaActiva) {
+            return redirect('/atencion-paciente');
+        }
+
         return Inertia::render('dashboard', [
             'auth' => ['user' => $user],
             'personal' => [],

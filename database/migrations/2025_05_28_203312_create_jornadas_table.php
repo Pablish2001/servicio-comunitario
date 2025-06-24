@@ -17,6 +17,7 @@ return new class extends Migration
 
             $table->unsignedBigInteger('sede_id');
             $table->timestamp('fecha_inicio')->nullable();
+            $table->timestamp('fecha_fin')->nullable();
 
             $table->foreign('sede_id')->references('id')->on('sedes')->onDelete('cascade');
         });

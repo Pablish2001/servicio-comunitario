@@ -7,7 +7,7 @@ import { usePage } from '@inertiajs/react';
 import { ChevronsUpDown } from 'lucide-react';
 
 export function NavUser() {
-    const { auth } = usePage<SharedData>().props;
+    const { auth, jornada } = usePage().props as any;
 
     return (
         <div className="ml-auto">
@@ -26,7 +26,7 @@ export function NavUser() {
                     align="end"
                     sideOffset={8}
                 >
-                    <UserMenuContent user={auth.user} />
+                    <UserMenuContent user={auth.user} jornada={jornada} />
                 </DropdownMenuContent>
             </DropdownMenu>
         </div>

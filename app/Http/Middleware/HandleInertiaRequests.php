@@ -39,6 +39,11 @@ class HandleInertiaRequests extends Middleware
     {
         [$message, $author] = str(Inspiring::quotes()->random())->explode('-');
 
+        // Jornada activa global para la sede (hoy, sin fecha_fin)
+        $jornadaActiva = \App\Models\Jornada::whereDate('fecha_inicio', today())
+            ->whereNull('fecha_fin')
+            ->first();
+
         return [
             ...parent::share($request),
             'name' => config('app.name'),
@@ -46,6 +51,7 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => $request->user()?->load('persona'),
             ],
+            'jornada' => $jornadaActiva,
             'ziggy' => fn (): array => [
                 ...(new Ziggy)->toArray(),
                 'location' => $request->url(),

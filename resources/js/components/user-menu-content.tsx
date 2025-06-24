@@ -9,7 +9,9 @@ interface UserMenuContentProps {
     user: User;
 }
 
-export function UserMenuContent({ user }: UserMenuContentProps) {
+import { Calendar } from 'lucide-react';
+
+export function UserMenuContent({ user, jornada }: UserMenuContentProps & { jornada?: any }) {
     const cleanup = useMobileNavigation();
 
     const handleLogout = () => {
@@ -32,6 +34,14 @@ export function UserMenuContent({ user }: UserMenuContentProps) {
                         <span>Settings</span>
                     </Link>
                 </DropdownMenuItem>
+                {jornada && (
+                    <DropdownMenuItem asChild className="m-0 p-0 text-black hover:bg-[#3EE9FD] focus:bg-[#3EE9FD]">
+                        <Link className="flex w-full items-center px-3 py-1.5 text-black hover:text-black focus:text-black" href={route('jornadas')} as="button" prefetch onClick={cleanup}>
+                            <Calendar className="mr-2 h-4 w-4 text-black" />
+                            <span>Gestión de Jornada</span>
+                        </Link>
+                    </DropdownMenuItem>
+                )}
             </DropdownMenuGroup>
             <DropdownMenuSeparator className="m-0 bg-black/20" />
             <DropdownMenuItem asChild className="m-0 p-0 text-black hover:bg-[#3EE9FD] focus:bg-[#3EE9FD]">

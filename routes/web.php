@@ -19,6 +19,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/jornada/iniciar', [JornadaController::class, 'iniciar'])->name('jornada.iniciar');
 
     // Agregar personal a jornada
+    Route::post('/jornada/agregar-personal', [JornadaController::class, 'agregarPersonal'])->name('jornada.agregar');
+    Route::post('/jornada/quitar-personal', [JornadaController::class, 'quitarPersonal'])->name('jornada.quitar');
     Route::post('/jornada/agregar-personal', [JornadaController::class, 'agregarPersonal'])->name('jornada.agregar-personal');
 
     // Quitar personal de jornada
@@ -30,6 +32,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/atencion-paciente', function () {
         return Inertia::render('AtencionPaciente');
     })->name('atencion.paciente');
+
+    // Vista de gestión de jornada (Jornadas)
+    Route::get('/jornadas', [JornadaController::class, 'vista'])->name('jornadas');
 });
 
 

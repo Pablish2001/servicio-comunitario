@@ -13,13 +13,17 @@ class Paciente extends Model
         'cedula',
         'fecha_nacimiento',
         'contacto',
-        'carrera',
-        'semestre',
+        'carrera_id',
         'persona_id',
     ];
 
     public function persona()
     {
         return $this->belongsTo(Persona::class);
+    }
+
+    public function carrera()
+    {
+        return $this->belongsTo(Carrera::class);
     }
 }

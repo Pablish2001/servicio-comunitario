@@ -2,13 +2,11 @@
 
 namespace App\Models;
 
-use Backpack\CRUD\app\Models\Traits\CrudTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Persona extends Model
 {
-    use CrudTrait;
     use HasFactory;
 
     protected $fillable = [
@@ -27,5 +25,10 @@ class Persona extends Model
     public function paciente()
     {
         return $this->hasOne(Paciente::class);
+    }
+
+    public function getNombreCompletoAttribute(): string
+    {
+       return trim($this->nombre . ' ' . $this->apellido);
     }
 }

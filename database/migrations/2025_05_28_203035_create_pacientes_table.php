@@ -16,12 +16,13 @@ return new class extends Migration
             $table->string('cedula')->unique();
             $table->date('fecha_nacimiento');
             $table->string('contacto');
-            $table->string('carrera');
-            $table->string('semestre');
+            $table->foreignId('carrera_id')->nullable()->constrained()->nullOnDelete();
             $table->timestamps();
 
             $table->unsignedBigInteger('persona_id')->unique();
             $table->foreign('persona_id')->references('id')->on('personas')->onDelete('cascade');
+
+
 
         });
     }

@@ -1,15 +1,14 @@
 <?php
 
 namespace App\Models;
-
-use Backpack\CRUD\app\Models\Traits\CrudTrait;
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Models\Contracts\HasName;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-class User extends Authenticatable
+class User extends Authenticatable implements FilamentUser, HasName
 {
-    use CrudTrait;
     use HasFactory, Notifiable;
 
     /**
@@ -68,5 +67,16 @@ class User extends Authenticatable
     public function acciones()
     {
         return $this->hasMany(JornadaUserAccion::class);
+    }
+
+        public function canAccessPanel(\Filament\Panel $panel): bool
+    {
+        return true; // o tu lógica para verificar acceso
+    }
+
+    public function getFilamentName(): string
+    {
+        //dd($this->persona?->nombre_completo ?? "Usuario sin nombre");
+        return $this->persona?->nombre_completo ?? "Usuario sin nombre";
     }
 }

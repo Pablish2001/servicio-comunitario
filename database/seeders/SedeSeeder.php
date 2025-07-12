@@ -13,8 +13,9 @@ class SedeSeeder extends Seeder
             ['id' => 1],
             [
                 'nombre' => 'Villa Asia',
-                'direccion' => 'Puerto Ordaz'
-            ]
+                'direccion' => 'Sede de Villa Asia en la Calle China, Sector Villa Asia, Parroquia Cachamay, Municipio Autónomo Caroní, Puerto Ordaz, Estado Bolívar',
+                'invocador' => 'VASede',
+                ]
         );
     }
 }

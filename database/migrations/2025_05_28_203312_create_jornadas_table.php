@@ -13,11 +13,10 @@ return new class extends Migration
     {
         Schema::create('jornadas', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
 
             $table->unsignedBigInteger('sede_id');
-            $table->timestamp('fecha_inicio')->nullable();
-            $table->timestamp('fecha_fin')->nullable();
+            $table->date('fecha_inicio')->unique();
+            $table->date('fecha_fin')->nullable();
 
             $table->foreign('sede_id')->references('id')->on('sedes')->onDelete('cascade');
         });

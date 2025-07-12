@@ -74,6 +74,11 @@ class User extends Authenticatable implements FilamentUser, HasName
         return true; // o tu lógica para verificar acceso
     }
 
+        public function canAccessFilament(): bool
+    {
+        return (bool) $this->isAdmind;
+    }
+
     public function getFilamentName(): string
     {
         //dd($this->persona?->nombre_completo ?? "Usuario sin nombre");

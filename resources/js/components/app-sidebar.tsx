@@ -41,7 +41,9 @@ export function AppSidebar() {
     return (
         <div className="flex h-full w-full items-center justify-between">
             <div className="mr-4 flex items-center gap-4 text-xl font-bold text-white">
-                <img src="/hospital-header-image.png" alt="hospital header image" className="w-15" />
+                <a href="/dashboard">
+                    <img src="/hospital-header-image.png" alt="hospital header image" className="w-15" />
+                </a>
                 <div className="flex flex-col gap-2">
                     <p>
                         Sede actual: <span className="font-semibold text-white">{props.sede?.nombre ?? 'Ninguna'}</span>

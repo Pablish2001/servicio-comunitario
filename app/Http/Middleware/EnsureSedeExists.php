@@ -6,9 +6,8 @@ use App\Models\Sede;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Session;
-
+use Symfony\Component\HttpFoundation\Response;
 
 class EnsureSedeExists
 {
@@ -19,7 +18,7 @@ class EnsureSedeExists
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (!Auth::check()) {
+        if (! Auth::check()) {
             return $next($request);
         }
         $sede = session('sede');

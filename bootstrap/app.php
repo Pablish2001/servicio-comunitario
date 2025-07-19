@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\EnsureJornadaActiva;
 use App\Http\Middleware\EnsureSedeExists;
 use App\Http\Middleware\HandleAppearance;
 use App\Http\Middleware\HandleInertiaRequests;
@@ -29,7 +30,11 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->validateCsrfTokens(except: [
             '/verify-user',
         ]);
-
+/*
+        $middleware->alias([
+            'jornada.activa' => EnsureJornadaActiva::class,
+        ]);
+*/
     })
 
     ->withExceptions(function (Exceptions $exceptions) {})->create();

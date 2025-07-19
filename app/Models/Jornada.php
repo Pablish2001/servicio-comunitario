@@ -9,6 +9,8 @@ class Jornada extends Model
 {
     use HasFactory;
 
+    public $timestamps = false;
+
     protected $fillable = [
         'sede_id',
         'fecha_inicio',
@@ -17,8 +19,6 @@ class Jornada extends Model
 
     protected $dates = [
         'fecha_inicio',
-        'created_at',
-        'updated_at',
     ];
 
     public function sede()

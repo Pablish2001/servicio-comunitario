@@ -56,11 +56,23 @@ class JornadaController extends Controller
             'user_ids.*' => 'exists:users,id',
         ]);
 
-        $jornada = Jornada::create([
-            'sede_id' => 1,
-            'fecha_inicio' => now(),
-        ]);
+        // Verifica si ya existe una jornada para hoy
+        $jornada = Jornada::whereDate('fecha_inicio', today())->first();
+        $sede = session('sede');
 
+        if ($jornada) {
+            // Si existe, actualiza la jornada pendiente
+            return redirect()->back()->withErrors(['jornada' => 'Ya existe una jornada para hoy.']);
+        } elseif (! $sede) {
+            // Si no existe, crea una nueva jornada
+            $jornada = Jornada::create([
+                'sede_id' => $sede,
+                'fecha_inicio' => today(),
+            ]);
+        } else {
+            // Si no hay sede, redirige con error
+            return redirect()->back()->withErrors(['sede' => 'No hay sede seleccionada.']);
+        }
         foreach ($request->user_ids as $id) {
             $jornada->users()->attach($id, [
                 'joined_at' => now(),

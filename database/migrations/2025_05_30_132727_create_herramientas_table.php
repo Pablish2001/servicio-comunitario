@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('nombre');
             $table->string('descripcion')->nullable();
             $table->integer('cantidad')->default(0);
-            $table->enum('status', ['bueno', 'regular','malo'])->default('bueno');
+            $table->enum('status', ['bueno', 'regular', 'malo'])->default('bueno');
 
             $table->unsignedBigInteger('sede_id');
 

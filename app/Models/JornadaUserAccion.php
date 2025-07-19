@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class JornadaUserAccion extends Model
 {
     protected $table = 'jornada_user_acciones';
+
     protected $fillable = [
         'jornada_id',
         'user_id',

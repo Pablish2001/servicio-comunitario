@@ -26,8 +26,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->validateCsrfTokens(except: [
             '/verify-user',
         ]);
-        
+
     })
-    ->withExceptions(function (Exceptions $exceptions) {
-        //
-    })->create();
+
+    ->withExceptions(function (Exceptions $exceptions) {})->create();

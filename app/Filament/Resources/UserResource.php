@@ -2,60 +2,60 @@
 
 namespace App\Filament\Resources;
 
-use App\Models\User;
+use App\Filament\Resources\UserResource\Pages;
 use App\Models\Persona;
-use Filament\Forms;
+use App\Models\User;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Hash;
-use App\Filament\Resources\UserResource\Pages;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Select;
 
 class UserResource extends Resource
 {
     protected static ?string $model = User::class;
+
     protected static ?string $navigationIcon = 'heroicon-o-user';
 
-        public static function form(Form $form): Form
-        {
-            return $form
-                ->schema([
-                    Section::make('Datos Usuario')
-                        ->schema([
-                            TextInput::make('cedula')->required(),
-                            TextInput::make('password')
-                                ->password()
-                                ->dehydrateStateUsing(fn ($state) => filled($state) ? bcrypt($state) : null)
-                                ->dehydrated(fn ($state) => filled($state)),
-                            Select::make('status')->options([
-                                'activo' => 'Activo',
-                                'inactivo' => 'Inactivo',
-                            ]),
-                            Select::make('isAdmind')
-                                ->label('Es administrador?')
-                                ->options([
-                                    true => 'Sí',
-                                    false => 'No',
-                                ])
-                                ->default(false),
+    public static function form(Form $form): Form
+    {
+        return $form
+            ->schema([
+                Section::make('Datos Usuario')
+                    ->schema([
+                        TextInput::make('cedula')->required(),
+                        TextInput::make('password')
+                            ->password()
+                            ->dehydrateStateUsing(fn ($state) => filled($state) ? bcrypt($state) : null)
+                            ->dehydrated(fn ($state) => filled($state)),
+                        Select::make('status')->options([
+                            'activo' => 'Activo',
+                            'inactivo' => 'Inactivo',
                         ]),
-                    Section::make('Datos Persona')
-                        ->schema([
-                            TextInput::make('nombre')->required(),
-                            TextInput::make('apellido')->required(),
-                            TextInput::make('email')->email(),
-                            TextInput::make('contacto')->required(),
-                            Select::make('genero')->options([
-                                'masculino' => 'Masculino',
-                                'femenino' => 'Femenino',
-                            ])->required(),
-                        ]),
-                ]);
-        }
+                        Select::make('isAdmind')
+                            ->label('Es administrador?')
+                            ->options([
+                                true => 'Sí',
+                                false => 'No',
+                            ])
+                            ->default(false),
+                    ]),
+                Section::make('Datos Persona')
+                    ->schema([
+                        TextInput::make('nombre')->required(),
+                        TextInput::make('apellido')->required(),
+                        TextInput::make('email')->email(),
+                        TextInput::make('contacto')->required(),
+                        Select::make('genero')->options([
+                            'masculino' => 'Masculino',
+                            'femenino' => 'Femenino',
+                        ])->required(),
+                    ]),
+            ]);
+    }
 
     public static function table(Table $table): Table
     {
@@ -82,6 +82,7 @@ class UserResource extends Resource
         $data['persona_id'] = $persona->id;
         $data['password'] = Hash::make($data['password']);
         unset($data['persona']);
+
         return $data;
     }
 
@@ -92,6 +93,7 @@ class UserResource extends Resource
             $user->persona->update($data['persona']);
             unset($data['persona']);
         }
+
         return $data;
     }
 }

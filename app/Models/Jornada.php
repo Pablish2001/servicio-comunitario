@@ -29,11 +29,12 @@ class Jornada extends Model
     public function users()
     {
         return $this->belongsToMany(User::class, 'jornada_users')
-                    ->withPivot('status', 'joined_at')
-                    ->withTimestamps();
+            ->withPivot('status', 'joined_at')
+            ->withTimestamps();
     }
+
     public function acciones()
-{
-    return $this->hasMany(JornadaUserAccion::class);
-}
+    {
+        return $this->hasMany(JornadaUserAccion::class);
+    }
 }

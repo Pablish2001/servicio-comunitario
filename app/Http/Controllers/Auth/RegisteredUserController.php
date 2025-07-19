@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Auth;
-use Illuminate\Support\Str;
+
 use App\Http\Controllers\Controller;
 use App\Models\Persona;
 use App\Models\User;
@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rules;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -38,8 +39,8 @@ class RegisteredUserController extends Controller
             'nombre' => 'required|string|max:255',
             'apellido' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:personas,email',
-            'contacto' => 'required|string|max:50', 
-            'genero' => 'required|in:masculino,femenino', 
+            'contacto' => 'required|string|max:50',
+            'genero' => 'required|in:masculino,femenino',
 
             // Datos del usuario
             'cedula' => 'required|string|max:20|unique:users,cedula',
@@ -74,7 +75,8 @@ class RegisteredUserController extends Controller
 
         } catch (\Exception $e) {
             DB::rollBack();
-            return back()->withErrors(['error' => 'Error al registrar usuario: ' . $e->getMessage()]);
+
+            return back()->withErrors(['error' => 'Error al registrar usuario: '.$e->getMessage()]);
         }
     }
 }

@@ -11,6 +11,7 @@ type LoginForm = {
     cedula: string;
     password: string;
     remember: boolean;
+    sede: string;
 };
 
 interface LoginProps {
@@ -18,10 +19,14 @@ interface LoginProps {
 }
 
 export default function Login({ status }: LoginProps) {
+    const searchParams = new URLSearchParams(window.location.search);
+    const sede = searchParams.get('sede');
+
     const { data, setData, post, processing, errors, reset } = useForm<Required<LoginForm>>({
         cedula: '',
         password: '',
         remember: false,
+        sede: sede || '',
     });
 
     const submit: FormEventHandler = (e) => {

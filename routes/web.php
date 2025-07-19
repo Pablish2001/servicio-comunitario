@@ -1,18 +1,16 @@
 <?php
 
-
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\JornadaController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-
 
 Route::get('/', function () {
     return Inertia::render('welcome');
 })->name('home');
 
 Route::middleware(['auth'])->group(function () {
-    
+
     // Ruta al dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     // Iniciar jornada
@@ -36,8 +34,6 @@ Route::middleware(['auth'])->group(function () {
     // Vista de gestión de jornada (Jornadas)
     Route::get('/jornadas', [JornadaController::class, 'vista'])->name('jornadas');
 });
-
-
 
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';

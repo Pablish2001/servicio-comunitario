@@ -1,9 +1,11 @@
 import { NavUser } from '@/components/nav-user';
+import { usePage } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 
 export function AppSidebar() {
     const [currentDateTime, setCurrentDateTime] = useState('');
     const [currentTime, setCurrentTime] = useState('');
+    const { props } = usePage<{ sede?: { nombre: string; direccion: string } }>();
 
     useEffect(() => {
         const updateDateTime = () => {
@@ -41,7 +43,9 @@ export function AppSidebar() {
             <div className="mr-4 flex items-center gap-4 text-xl font-bold text-white">
                 <img src="/hospital-header-image.png" alt="hospital header image" className="w-15" />
                 <div className="flex flex-col gap-2">
-                    <p>JORNADA LABORAL</p>
+                    <p>
+                        Sede actual: <span className="font-semibold text-white">{props.sede?.nombre ?? 'Ninguna'}</span>
+                    </p>
                     <div className="flex flex-col items-center">
                         <p className="rounded-full border border-white bg-[#1F9AFF] px-6 py-1 text-xs text-white">
                             {currentDateTime} - {currentTime}

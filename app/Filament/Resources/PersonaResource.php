@@ -5,15 +5,16 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\PersonaResource\Pages;
 use App\Models\Persona;
 use Filament\Forms;
-use Filament\Tables;
-use Filament\Resources\Resource;
 use Filament\Forms\Form;
+use Filament\Resources\Resource;
+use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 
 class PersonaResource extends Resource
 {
     protected static ?string $model = Persona::class;
+
     protected static ?string $navigationIcon = 'heroicon-o-user';
 
     public static function form(Form $form): Form

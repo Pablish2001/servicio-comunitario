@@ -3,15 +3,12 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\SedeResource\Pages;
-use App\Filament\Resources\SedeResource\RelationManagers;
 use App\Models\Sede;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class SedeResource extends Resource
 {
@@ -23,7 +20,7 @@ class SedeResource extends Resource
     {
         return $form
             ->schema([
-               Forms\Components\TextInput::make('nombre')->required(),
+                Forms\Components\TextInput::make('nombre')->required(),
                 Forms\Components\TextInput::make('invocador')
                     ->required()
                     ->hint('Para acceder a los datos de la sede por URL'),
@@ -32,7 +29,7 @@ class SedeResource extends Resource
                     ->rows(4) // puedes ajustar el número de filas visibles
                     ->maxLength(500) // opcional: límite de caracteres
                     ->autosize(false),
-           
+
             ]);
     }
 
@@ -42,8 +39,8 @@ class SedeResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('nombre'),
                 Tables\Columns\TextColumn::make('direccion')
-                ->limit(40) // Muestra solo los primeros 30 caracteres
-                ->tooltip(fn ($record) => $record->direccion),
+                    ->limit(40) // Muestra solo los primeros 30 caracteres
+                    ->tooltip(fn ($record) => $record->direccion),
                 Tables\Columns\TextColumn::make('invocador'),
             ])
             ->filters([

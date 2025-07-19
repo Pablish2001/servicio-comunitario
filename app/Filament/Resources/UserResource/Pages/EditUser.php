@@ -3,13 +3,9 @@
 namespace App\Filament\Resources\UserResource\Pages;
 
 use App\Filament\Resources\UserResource;
-use Filament\Resources\Pages\EditRecord;
 use Filament\Actions;
 use Filament\Notifications\Notification;
-use Illuminate\Auth\Access\AuthorizationException;
-use Illuminate\Support\Facades\Auth;
-
-
+use Filament\Resources\Pages\EditRecord;
 
 class EditUser extends EditRecord
 {
@@ -50,34 +46,34 @@ class EditUser extends EditRecord
         return $data;
     }
 
-protected function getHeaderActions(): array
-{
-    return [
-        Actions\Action::make('deleteWithPersona')
-            ->label('Eliminar Usuario')
-            ->color('danger')
-            ->requiresConfirmation()
-            ->authorize(fn () => true)
-            ->action(function () {
-                if ($this->record->persona) {
-                    $this->record->persona->delete();
-                }
-
-                $this->record->delete();
-
-                Notification::make()
-                    ->success()
-                    ->title('Usuario eliminado')
-                    ->body('El usuario y su persona asociada han sido eliminados correctamente.')
-                    ->send();
-
-                $this->redirect(UserResource::getUrl('index'));
-            }),
-    ];
-}
-
-            protected function getRedirectUrl(): string
+    protected function getHeaderActions(): array
     {
-       return static::getResource()::getUrl('index'); 
+        return [
+            Actions\Action::make('deleteWithPersona')
+                ->label('Eliminar Usuario')
+                ->color('danger')
+                ->requiresConfirmation()
+                ->authorize(fn () => true)
+                ->action(function () {
+                    if ($this->record->persona) {
+                        $this->record->persona->delete();
+                    }
+
+                    $this->record->delete();
+
+                    Notification::make()
+                        ->success()
+                        ->title('Usuario eliminado')
+                        ->body('El usuario y su persona asociada han sido eliminados correctamente.')
+                        ->send();
+
+                    $this->redirect(UserResource::getUrl('index'));
+                }),
+        ];
+    }
+
+    protected function getRedirectUrl(): string
+    {
+        return static::getResource()::getUrl('index');
     }
 }

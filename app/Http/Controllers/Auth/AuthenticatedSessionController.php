@@ -4,14 +4,15 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Models\Sede;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
-use App\Models\User;
-use App\Models\Persona;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -31,12 +32,32 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
+        $sedeCodigo = $request->input('sede');
+
+        if (! $sedeCodigo) {
+            throw ValidationException::withMessages([
+                'cedula' => 'ingrese la sede en la URL "login?sede=VAsede"',
+            ]);
+        }
+
+        $sede = Sede::where('invocador', $sedeCodigo)->first();
+
+        if (! $sede) {
+            throw ValidationException::withMessages([
+                'cedula' => 'Sede incorrecta.',
+            ]);
+        }
+
+        // ✅ Autenticar (cedula + password)
         $request->authenticate();
 
         $request->session()->regenerate();
 
+        // ✅ Guardar usuario + sede
         $user = User::with('persona')->where('cedula', $request->cedula)->first()->toArray();
         $request->session()->put('user_data', $user);
+        $request->session()->put('sede', $sede->toArray());
+
         return redirect()->intended(route('dashboard', absolute: false));
     }
 

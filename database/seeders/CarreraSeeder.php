@@ -2,10 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
 use App\Models\Carrera;
-
+use Illuminate\Database\Seeder;
 
 class CarreraSeeder extends Seeder
 {
@@ -14,7 +12,7 @@ class CarreraSeeder extends Seeder
      */
     public function run(): void
     {
-         $carreras = [
+        $carreras = [
             'Licenciatura En Gestión De Alojamiento Turístico',
             'Ciencias Ambientales',
             'Educación Integral',

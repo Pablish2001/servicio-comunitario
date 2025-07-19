@@ -21,7 +21,7 @@ return new class extends Migration
             $table->integer('frecuencia_cardiaca')->nullable();
             $table->integer('frecuencia_respiratoria')->nullable();
             $table->integer('peso')->nullable();
-            $table->string('saturacion')->nullable();            
+            $table->string('saturacion')->nullable();
             $table->timestamps();
 
             $table->unsignedBigInteger('paciente_id');

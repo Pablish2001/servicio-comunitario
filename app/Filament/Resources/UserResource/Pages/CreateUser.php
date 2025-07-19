@@ -32,10 +32,9 @@ class CreateUser extends CreateRecord
 
         return $data;
     }
-        protected function getRedirectUrl(): string
+
+    protected function getRedirectUrl(): string
     {
-       return static::getResource()::getUrl('index'); 
+        return static::getResource()::getUrl('index');
     }
-
 }
-

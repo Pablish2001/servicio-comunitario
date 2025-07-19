@@ -3,10 +3,9 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use App\Models\User;
-use App\Models\Persona;
 
 class VerifyUserController extends Controller
 {
@@ -20,7 +19,7 @@ class VerifyUserController extends Controller
         // Buscar el usuario por cédula
         $user = User::where('cedula', $request->cedula)->first();
 
-        if (!$user) {
+        if (! $user) {
             return response()->json([
                 'success' => false,
                 'message' => 'Usuario no encontrado',
@@ -28,21 +27,22 @@ class VerifyUserController extends Controller
         }
 
         // Verificar la contraseña
-        if (!Hash::check($request->password, $user->password)) {
+        if (! Hash::check($request->password, $user->password)) {
             return response()->json([
                 'success' => false,
                 'message' => 'Contraseña incorrecta',
             ], 401);
         }
         $user->load('persona');
-    return response()->json([
+
+        return response()->json([
             'success' => true,
             'user' => [
-            'cedula' => $user->cedula,
-            'nombre' => $user->persona->nombre,
-            'apellido' => $user->persona->apellido,
-            // otros campos
-        ]
-    ]);
+                'cedula' => $user->cedula,
+                'nombre' => $user->persona->nombre,
+                'apellido' => $user->persona->apellido,
+                // otros campos
+            ],
+        ]);
     }
 }

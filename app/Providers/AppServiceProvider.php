@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\ServiceProvider;
 use Inertia\Inertia;
 
@@ -24,8 +25,8 @@ class AppServiceProvider extends ServiceProvider
         Inertia::share([
             'auth' => function () {
                 $user = Auth::user();
-                
-                if (!$user) {
+
+                if (! $user) {
                     return ['user' => null];
                 }
 
@@ -36,8 +37,12 @@ class AppServiceProvider extends ServiceProvider
                 $user->nombre = $user->persona->nombre; // Para compatibilidad
 
                 return [
-                    'user' => $user
+                    'user' => $user,
                 ];
+            },
+
+            'sede' => function () {
+                return Session::get('sede'); // Devuelve toda la data de la sede si fue guardada como array
             },
             // ... otros shares
         ]);

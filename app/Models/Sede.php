@@ -9,7 +9,7 @@ class Sede extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['nombre', 'direccion'];
+    protected $fillable = ['nombre', 'direccion', 'invocador'];
 
     public function jornadas()
     {

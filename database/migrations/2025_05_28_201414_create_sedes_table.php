@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('nombre')->unique();
             $table->string('direccion');
-            $table->string('invocador');     
+            $table->string('invocador');
             $table->timestamps();
         });
     }

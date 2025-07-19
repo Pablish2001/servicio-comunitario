@@ -29,6 +29,6 @@ class Persona extends Model
 
     public function getNombreCompletoAttribute(): string
     {
-       return trim($this->nombre . ' ' . $this->apellido);
+        return trim($this->nombre.' '.$this->apellido);
     }
 }

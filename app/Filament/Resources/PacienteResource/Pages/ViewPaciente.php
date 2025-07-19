@@ -3,11 +3,9 @@
 namespace App\Filament\Resources\PacienteResource\Pages;
 
 use App\Filament\Resources\PacienteResource;
-use Filament\Resources\Pages\ViewRecord;
 use Filament\Actions;
 use Filament\Notifications\Notification;
-use Illuminate\Auth\Access\AuthorizationException;
-use Illuminate\Support\Facades\Auth;
+use Filament\Resources\Pages\ViewRecord;
 
 class ViewPaciente extends ViewRecord
 {
@@ -28,28 +26,28 @@ class ViewPaciente extends ViewRecord
     }
 
     protected function getHeaderActions(): array
-{
-    return [
-        Actions\Action::make('deleteWithPersona')
-            ->label('Eliminar Paciente')
-            ->color('danger')
-            ->requiresConfirmation()
-            ->authorize(fn () => true)
-            ->action(function () {
-                if ($this->record->persona) {
-                    $this->record->persona->delete();
-                }
+    {
+        return [
+            Actions\Action::make('deleteWithPersona')
+                ->label('Eliminar Paciente')
+                ->color('danger')
+                ->requiresConfirmation()
+                ->authorize(fn () => true)
+                ->action(function () {
+                    if ($this->record->persona) {
+                        $this->record->persona->delete();
+                    }
 
-                $this->record->delete();
+                    $this->record->delete();
 
-                Notification::make()
-                    ->success()
-                    ->title('Paciente eliminado')
-                    ->body('El paciente y su persona asociada han sido eliminados correctamente.')
-                    ->send();
+                    Notification::make()
+                        ->success()
+                        ->title('Paciente eliminado')
+                        ->body('El paciente y su persona asociada han sido eliminados correctamente.')
+                        ->send();
 
-                $this->redirect(PacienteResource::getUrl('index'));
-            }),
-    ];
-}
+                    $this->redirect(PacienteResource::getUrl('index'));
+                }),
+        ];
+    }
 }

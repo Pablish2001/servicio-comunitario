@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Resources\PacienteResource\Pages;
 use App\Models\Paciente;
 use App\Models\Persona;
 use Filament\Forms;
@@ -9,11 +10,11 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use App\Filament\Resources\PacienteResource\Pages;
 
 class PacienteResource extends Resource
 {
     protected static ?string $model = Paciente::class;
+
     protected static ?string $navigationIcon = 'heroicon-o-user-circle';
 
     public static function form(Form $form): Form
@@ -52,8 +53,8 @@ class PacienteResource extends Resource
     public static function getPages(): array
     {
         return [
-        'index' => Pages\ListPacientes::route('/'),
-        'view' => Pages\ViewPaciente::route('/{record}'), // página de solo lectura
+            'index' => Pages\ListPacientes::route('/'),
+            'view' => Pages\ViewPaciente::route('/{record}'), // página de solo lectura
         ];
     }
 
@@ -63,6 +64,7 @@ class PacienteResource extends Resource
         $persona = Persona::create($personaData);
         $data['persona_id'] = $persona->id;
         unset($data['persona']);
+
         return $data;
     }
 
@@ -73,6 +75,7 @@ class PacienteResource extends Resource
             $paciente->persona->update($data['persona']);
             unset($data['persona']);
         }
+
         return $data;
     }
 }

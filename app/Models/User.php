@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Models;
+
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Models\Contracts\HasName;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -61,27 +62,28 @@ class User extends Authenticatable implements FilamentUser, HasName
     public function jornadas()
     {
         return $this->belongsToMany(Jornada::class, 'jornada_users')
-                    ->withTimestamps()
-                    ->withPivot('status');
+            ->withTimestamps()
+            ->withPivot('status');
     }
+
     public function acciones()
     {
         return $this->hasMany(JornadaUserAccion::class);
     }
 
-        public function canAccessPanel(\Filament\Panel $panel): bool
+    public function canAccessPanel(\Filament\Panel $panel): bool
     {
         return true; // o tu lógica para verificar acceso
     }
 
-        public function canAccessFilament(): bool
+    public function canAccessFilament(): bool
     {
         return (bool) $this->isAdmind;
     }
 
     public function getFilamentName(): string
     {
-        //dd($this->persona?->nombre_completo ?? "Usuario sin nombre");
-        return $this->persona?->nombre_completo ?? "Usuario sin nombre";
+        // dd($this->persona?->nombre_completo ?? "Usuario sin nombre");
+        return $this->persona?->nombre_completo ?? 'Usuario sin nombre';
     }
 }

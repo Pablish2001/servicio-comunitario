@@ -2,15 +2,15 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class Carrera extends Model
 {
-        use HasFactory;
+    use HasFactory;
 
     protected $fillable = [
-        'nombre',     
+        'nombre',
     ];
 
     public function pacientes()

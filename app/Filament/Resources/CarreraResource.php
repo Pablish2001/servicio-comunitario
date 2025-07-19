@@ -3,15 +3,12 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\CarreraResource\Pages;
-use App\Filament\Resources\CarreraResource\RelationManagers;
 use App\Models\Carrera;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class CarreraResource extends Resource
 {
@@ -31,7 +28,7 @@ class CarreraResource extends Resource
     {
         return $table
             ->columns([
-               Tables\Columns\TextColumn::make('nombre'),
+                Tables\Columns\TextColumn::make('nombre'),
             ])
             ->filters([
                 //

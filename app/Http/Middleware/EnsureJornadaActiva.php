@@ -2,11 +2,11 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Jornada;
 use Closure;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
-use App\Models\Jornada;
 use Illuminate\Support\Facades\Auth;
+use Symfony\Component\HttpFoundation\Response;
 
 class EnsureJornadaActiva
 {

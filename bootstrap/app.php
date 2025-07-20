@@ -30,11 +30,11 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->validateCsrfTokens(except: [
             '/verify-user',
         ]);
-/*
+
         $middleware->alias([
             'jornada.activa' => EnsureJornadaActiva::class,
         ]);
-*/
+
     })
 
     ->withExceptions(function (Exceptions $exceptions) {})->create();

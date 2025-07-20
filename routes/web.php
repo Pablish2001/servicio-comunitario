@@ -26,16 +26,16 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('/validar-credenciales', [JornadaController::class, 'validarCredenciales'])->name('jornada.validar');
 
-        Route::get('/atencion-paciente', function () {
-        return Inertia::render('AtencionPaciente');
-    })->name('atencion.paciente');
-
-    Route::get('/jornada', [JornadaController::class, 'vista'])->name('jornada.vista');
 });
 
 // Middleware para asegurar que la jornada le pertenece a la session
 route::middleware(['auth', 'jornada.activa'])->group(function () {
-    
+    Route::get('/atencion-paciente', function () {
+        return Inertia::render('AtencionPaciente');
+    })->name('atencion.paciente');
+
+    Route::get('/jornada', [JornadaController::class, 'vista'])->name('jornada');
+
 });
 
 require __DIR__.'/settings.php';

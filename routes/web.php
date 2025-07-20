@@ -34,7 +34,7 @@ route::middleware(['auth', 'jornada.activa'])->group(function () {
         return Inertia::render('AtencionPaciente');
     })->name('atencion.paciente');
 
-    Route::get('/jornada', [JornadaController::class, 'vista'])->name('jornada');
+    Route::get('/jornadas', [JornadaController::class, 'vista'])->name('jornadas');
 
 });
 

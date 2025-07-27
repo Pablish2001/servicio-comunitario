@@ -96,7 +96,7 @@ export default function PersonalRegister() {
                 setShowToast(true);
                 setTimeout(() => {
                     setShowToast(false);
-                    window.location.href = '/atencion-paciente';
+                    window.location.href = '/atencions/create';
                 }, 2000);
             },
             onError: (errors) => {

@@ -27,7 +27,7 @@ class DashboardController extends Controller
             ->first();
 
         if ($jornadaActiva) {
-            return redirect('/atencion-paciente');
+            return redirect('/atencions/create');
         }
 
         return Inertia::render('dashboard', [

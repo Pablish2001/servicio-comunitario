@@ -63,7 +63,7 @@ class JornadaController extends Controller
         if ($jornada) {
             // Si existe, actualiza la jornada pendiente
             return redirect()->back()->withErrors(['jornada' => 'Ya existe una jornada para hoy.']);
-        } else if ($sede) {
+        } elseif ($sede) {
             $jornada = Jornada::create([
                 'sede_id' => $sede,
                 'fecha_inicio' => today(),

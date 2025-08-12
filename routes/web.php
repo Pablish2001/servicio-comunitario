@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DonacionController;
 use App\Http\Controllers\JornadaController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -13,8 +14,12 @@ Route::middleware(['auth'])->group(function () {
 
     // Ruta al dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    // Iniciar jornada
+
+    // Ruta para crear una nueva jornada
     Route::post('/jornada/iniciar', [JornadaController::class, 'iniciar'])->name('jornada.iniciar');
+
+    Route::get('/donaciones', [DonacionController::class, 'index'])->name('donaciones.index');
+    Route::post('/donaciones', [DonacionController::class, 'store']);
 
     // Agregar personal a jornada
     Route::post('/jornada/agregar-personal', [JornadaController::class, 'agregarPersonal'])->name('jornada.agregar');

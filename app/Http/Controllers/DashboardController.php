@@ -17,19 +17,28 @@ class DashboardController extends Controller
             abort(403, 'No hay sede activa en sesión.');
         }
 
-        // Buscar si el usuario tiene una jornada activa (por ejemplo, iniciada hoy y no cerrada)
+        // Buscar jornada activa (de hoy, sin cerrar, en esta sede)
         $jornadaActiva = Jornada::whereDate('fecha_inicio', today())
             ->where('sede_id', $sedeId)
-            ->whereHas('users', function ($q) use ($user) {
-                $q->where('users.id', $user->id);
-            })
             ->whereNull('fecha_fin')
             ->first();
 
         if ($jornadaActiva) {
+            // Verificar si el usuario ya está relacionado a la jornada
+            $yaRelacionado = $jornadaActiva->users()->where('users.id', $user->id)->exists();
+
+            // Si no está, lo agregamos a la jornada
+            if (! $yaRelacionado) {
+                $jornadaActiva->users()->attach($user->id, [
+                    'joined_at' => now(),
+                    'status' => 'presente',
+                ]);
+            }
+
             return redirect('/atencion-paciente');
         }
 
+        // Si no hay jornada activa, renderiza el dashboard
         return Inertia::render('dashboard', [
             'auth' => ['user' => $user],
             'personal' => [],

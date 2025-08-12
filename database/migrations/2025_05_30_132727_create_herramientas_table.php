@@ -13,16 +13,17 @@ return new class extends Migration
     {
         Schema::create('herramientas', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
-            $table->string('nombre');
-            $table->string('descripcion')->nullable();
+            $table->enum('categoria', ['quirurgica', 'diagnostico', 'proteccion', 'curacion', 'otra'])->default('otra');
+            $table->enum('estado', ['nueva', 'usada', 'deteriorada'])->default('nueva');
             $table->integer('cantidad')->default(0);
-            $table->enum('status', ['bueno', 'regular', 'malo'])->default('bueno');
+            $table->timestamps();
 
             $table->unsignedBigInteger('sede_id');
-
             $table->foreign('sede_id')->references('id')->on('sedes')->onDelete('cascade');
+            $table->unsignedBigInteger('item_id');
+            $table->foreign('item_id')->references('id')->on('items')->onDelete('cascade');
         });
+
     }
 
     /**

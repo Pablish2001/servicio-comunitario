@@ -15,4 +15,12 @@ class Sede extends Model
     {
         return $this->hasMany(Jornada::class);
     }
+    public function medicamentos()
+    {
+        return $this->hasMany(Medicamento::class);
+    }
+    public function items()
+    {
+        return $this->hasMany(Herramienta::class);
+    }
 }

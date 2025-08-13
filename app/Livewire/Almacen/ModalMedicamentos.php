@@ -15,88 +15,103 @@ class ModalMedicamentos extends Component
     public $unidad = '';
     public $presentacion = '';
     public $estado = '';
+    public $selected = [];
+    public $cantidades = [];
 
     protected $listeners = ['abrirModalMedicamento' => 'funcionEnModal'];
 
-        public function buscar()
+    public function reload()
     {
-        // No necesitas lógica, solo fuerza el render y activa wire:loading
     }
 
     public function funcionEnModal($itemId)
     {
         $this->medicamentoId = $itemId; 
-        $this->limpiarFiltros();
         $this->loadData();
         $this->dispatch('open-modal', id: 'edit-modal');
     }
 
-
         public function loadData()
     {
-        // Ejemplo: cargar el medicamento por ID
+        $this->limpiarFiltros();
         $this->medicamentos = Medicamento::with('item')
         ->where('item_id', $this->medicamentoId)
         ->get();
+        $this->nombre = Item::where('id', $this->medicamentoId)->value('nombre');
     }
 
-        public function obtenerItemsFiltrados()
-        {
-            // Si no hay medicamentos, devolver colección vacía
-            if (!$this->medicamentos) {
-                return collect();
-            }
-
-            return $this->medicamentos->filter(function($medicamento) {
-                // Filtrar unidad solo si hay filtro
-                if ($this->unidad && $medicamento->tipo_unidad !== $this->unidad) {
-                    return false;
-                }
-                // Filtrar presentación solo si hay filtro
-                if ($this->presentacion && $medicamento->presentacion !== $this->presentacion) {
-                    return false;
-                }
-                // Filtrar estado solo si hay filtro
-                if ($this->estado && $medicamento->estado !== $this->estado) {
-                    return false;
-                }
-                return true; // si pasa todos los filtros
-            });
+    public function obtenerItemsFiltrados()
+    {
+        // Si no hay medicamentos, devolver colección vacía
+        if (!$this->medicamentos) {
+            return collect();
         }
+
+        return $this->medicamentos->filter(function($medicamento) {
+            if ($this->unidad && $medicamento->tipo_unidad !== $this->unidad) {
+                return false;
+            }
+            if ($this->presentacion && $medicamento->presentacion !== $this->presentacion) {
+                return false;
+            }
+            if ($this->estado && $medicamento->estado !== $this->estado) {
+                return false;
+            }
+            return true; // si pasa todos los filtros
+        });
+    }
 
         // Método para limpiar filtros
-        public function limpiarFiltros()
-        {
-            $this->unidad = '';
-            $this->presentacion = '';
-            $this->estado = '';
-        }
+    public function limpiarFiltros()
+    {
+        $this->unidad = '';
+        $this->presentacion = '';
+        $this->estado = '';
+        $this->selected = [];
+    }
     
     public function guardar()
     {
-/*         $this->validate([
-            'nombre' => 'required|string|max:255',
-            'descripcion' => 'nullable|string',
-            'cantidad' => 'required|integer|min:0',
+        $this->validate([
+            'cantidades.*' => 'nullable|integer|min:0',
         ]);
 
-        $medicamento = Medicamento::find($this->medicamentoId);
-
-        if ($medicamento) {
-            $medicamento->update([
-                'nombre' => $this->nombre,
-                'descripcion' => $this->descripcion,
-                'cantidad' => $this->cantidad,
-            ]); */
-
+        if (empty($this->cantidades)) {
             Notification::make()
-                ->title('Medicamento actualizado correctamente')
-                ->success()
+                ->title('No hay cantidades para actualizar')
+                ->warning()
                 ->send();
+            return;
+        }
 
-            $this->dispatch('close-modal', id: 'edit-modal');
-            $this->dispatch('recargarTablaMedicamentos');
-        /* } */
+        foreach ($this->cantidades as $medicamentoId => $cantidad) {
+            $medicamento = Medicamento::find($medicamentoId);
+            if ($medicamento) {
+                $medicamento->cantidad = $cantidad;
+                $medicamento->save();
+            }
+        }
+
+        // Limpia solo las cantidades editadas para que input quede vacío otra vez
+        $this->cantidades = [];
+
+        $this->loadData(); // Recarga datos para actualizar la tabla si usas eso
+
+        Notification::make()
+            ->title('Medicamento actualizado correctamente')
+            ->success()
+            ->send();
+    }
+
+    public function eliminar()
+    {
+        Medicamento::whereIn('id', $this->selected)->delete();
+        $this->selected = [];
+        $this->loadData();
+        Notification::make()
+        ->title('Medicamento eliminado correctamente')
+        ->success()
+        ->send();
     }
 
     public function render()

@@ -5,7 +5,7 @@
     <div x-ref="modalContainer">
 
         <x-slot name="heading">
-            Modal heading
+            {{ $this->nombre }}
         </x-slot>
 
 
@@ -79,6 +79,13 @@
                     >
                         <span class="text-black dark:text-white">Limpiar</span>
                     </x-filament::button>
+
+                    <div wire:loading wire:target="obtenerItemsFiltrados">
+                        <svg class="animate-spin h-5 w-5 text-gray-500 inline-block mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+                        </svg>
+                    </div>
                 </div>
 
 
@@ -91,10 +98,11 @@
                     @if($itemsFiltrados->isEmpty())
                         <p class="text-gray-500">No hay registros para este medicamento con los filtros actuales.</p>
                         @else
-                        <div class="overflow-x-auto max-h-96">
+                        <div class="overflow-x-auto max-h-96" >
                             <table class="w-full bg-white dark:bg-gray-800 rounded-xl overflow-hidden">
                                 <thead class="bg-gray-100 dark:bg-gray-700">
                                     <tr>
+                                        <th class="px-4 py-2 text-left"></th>
                                         <th class="px-4 py-2 text-left">Cantidad</th>
                                         <th class="px-4 py-2 text-left">Unidad</th>
                                         <th class="px-4 py-2 text-left">Presentación</th>
@@ -105,8 +113,16 @@
                                 </thead>
                                 <tbody>
                                     @foreach($itemsFiltrados as $med)
-                                        <tr class="border-t">
-                                            <td class="px-4 py-2 text-center">{{ $med->cantidad }}</td>
+                                        <tr class="border-t" wire:key="med-{{ $med->id }}">
+                                            <td class="px-4 py-2 text-center">
+                                                <input type="checkbox" wire:model="selected" value="{{ $med->id }}" wire:change="reload">
+                                            </td>
+                                            <td class="px-4 py-2 text-center">
+                                                <input type="number" min="0" wire:model.lazy="cantidades.{{ $med->id }}" 
+                                                class="border rounded px-1 w-16 text-center bg-gray-100 dark:bg-gray-800" 
+                                                placeholder="{{ $med->cantidad }}"
+                                                title="Puedes editar la cantidad del medicamento">
+                                            </td>
                                             <td class="px-4 py-2 text-center">{{ $med->tipo_unidad }}</td>
                                             <td class="px-4 py-2 text-center">{{ $med->presentacion }}</td>
                                             <td class="px-4 py-2 text-center">{{ ucfirst($med->estado) }}</td>
@@ -123,8 +139,22 @@
 
 
         <x-slot name="footer">
-            <x-filament::button color="danger" wire:click="eliminar">Eliminar</x-filament::button>
+
             <x-filament::button wire:click="guardar">Guardar Cambios</x-filament::button>
+            <span wire:loading wire:target="reload">
+                <svg class="animate-spin h-5 w-5 text-gray-500 inline-block mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+                </svg>
+            </span>
+
+            <span wire:loading.remove wire:target="reload">
+                @if (!empty($selected))
+                    <x-filament::button wire:click="eliminar" color="danger">
+                        Eliminar seleccionados
+                    </x-filament::button>
+                @endif
+            </span>
         </x-slot>
 </div>
 </x-filament::modal>

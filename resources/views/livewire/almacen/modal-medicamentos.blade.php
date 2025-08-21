@@ -115,7 +115,7 @@
                                     @foreach($itemsFiltrados as $med)
                                         <tr class="border-t" wire:key="med-{{ $med->id }}">
                                             <td class="px-4 py-2 text-center">
-                                                <input type="checkbox" wire:model="selected" value="{{ $med->id }}" wire:change="reload">
+                                                <input type="radio" wire:model="selected" value="{{ $med->id }}">
                                             </td>
                                             <td class="px-4 py-2 text-center">
                                                 <input type="number" min="0" wire:model.lazy="cantidades.{{ $med->id }}" 
@@ -139,22 +139,14 @@
 
 
         <x-slot name="footer">
-
-            <x-filament::button wire:click="guardar">Guardar Cambios</x-filament::button>
-            <span wire:loading wire:target="reload">
-                <svg class="animate-spin h-5 w-5 text-gray-500 inline-block mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
-                </svg>
-            </span>
-
-            <span wire:loading.remove wire:target="reload">
-                @if (!empty($selected))
+            <div x-data="{ selected: @entangle('selected') }">
+                <x-filament::button wire:click="guardar">Guardar Cambios</x-filament::button>
+                <template x-if="selected">
                     <x-filament::button wire:click="eliminar" color="danger">
-                        Eliminar seleccionados
+                        Eliminar
                     </x-filament::button>
-                @endif
-            </span>
+                </template>
+            </div>
         </x-slot>
 </div>
 </x-filament::modal>

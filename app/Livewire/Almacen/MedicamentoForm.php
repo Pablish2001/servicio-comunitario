@@ -12,6 +12,16 @@ use App\Filament\Resources\AlmacenResource;
 class MedicamentoForm extends Component
 {
     public bool $descripcionHabilitada = false;
+    public $nombreMedicamentosOptions = [];
+    protected $listeners = ['medicamentoActualizado' => 'updateoptions'];
+
+    public function updateoptions()
+    {
+        $this->nombreMedicamentosOptions = Item::where('tipo', 'medicamento')
+    ->pluck('nombre')
+    ->toArray();
+    }
+
 
     public $medicamento = [
         'nombre' => '',
@@ -22,8 +32,6 @@ class MedicamentoForm extends Component
         'estado' => '',
         'fecha_ingreso' => '',
     ];
-
-    public $nombreMedicamentosOptions = [];
 
     public function mount()
     {
@@ -52,15 +60,15 @@ class MedicamentoForm extends Component
             'medicamento.presentacion' => 'required|string',
             'medicamento.estado' => 'required|string',
         ]);
-
+        $nombre = strtolower($this->medicamento['nombre']);
         // Buscar o crear el item
-        $item = Item::where('nombre', $this->medicamento['nombre'])
+        $item = Item::where('nombre', $nombre)
             ->where('tipo', 'medicamento')
             ->first();
 
         if (!$item) {
             $item = Item::create([
-                'nombre' => $this->medicamento['nombre'],
+                'nombre' => $nombre,
                 'tipo' => 'medicamento',
                 'descripcion' => $this->medicamento['descripcion'],
             ]);

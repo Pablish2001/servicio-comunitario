@@ -5,52 +5,103 @@ namespace App\Livewire\Almacen;
 use Livewire\Component;
 use App\Models\Item;
 use App\Models\Medicamento;
+use Filament\Notifications\Notification;
+
 
 class ItemsMedicamentos extends Component
 {
-
-    public $unidad = '';
-    public $presentacion = '';
-    public $estado = '';
-    public $itemSeleccionado = null;
+    public $item=[
+        'nombre' => '',
+        'descripcion' => '',
+    ];
+    public $nombre;
+    public $descripcion;
     public $medicamentoId = null;
-    public $cerrandoItem = false;
+    public bool $confirmandoEliminacion = false;
+
+    public function reload()
+    {
+    }
+
+    public function eliminar()
+    {
+        $medicamento = Item::find($this->medicamentoId);
+        $medicamento->delete();
+        Notification::make()
+        ->title('se elimino correctamente')
+        ->success()
+        ->send();
+        $this->dispatch('close-modal', id: 'edit-medicamento');
+        $this->dispatch('medicamento-actualizado', items: Item::where('tipo', 'medicamento')->get());
+        $this->dispatch('medicamentoActualizado');
+        $this->confirmandoEliminacion = false;
+    }
+
+    public function guardar()
+    {
+        $this->validate([
+            'nombre' => 'nullable|string',
+            'descripcion' => 'nullable|string',
+        ]);
+        //nombre en minusculas
+        $nombre = strtolower($this->nombre);
+        $item = Item::where('nombre', $nombre)->first();
+
+        if ($item) {
+            Notification::make()
+            ->title('Ese medicamento ya existe')
+            ->danger()
+            ->send();
+            $this->loadData();
+
+        } else {
+            if ($nombre){
+                Item::where('id', $this->medicamentoId)->update(['nombre' => $nombre]);
+            }
+            if ($this->descripcion) {
+                Item::where('id', $this->medicamentoId)->update(['descripcion' => $this->descripcion]);
+            }
+                Notification::make()
+                ->title('se guardo correctamente')
+                ->success()
+                ->send();
+                $this->dispatch('close-modal', id: 'edit-medicamento');
+
+            }
+            $this->dispatch('medicamento-actualizado', items: Item::where('tipo', 'medicamento')->get());
+            $this->dispatch('medicamentoActualizado');
+
+
+
+
+    }
 
 
     public function abrirModal($id)
     {
         $this->dispatch('abrirModalMedicamento', itemId: $id);
-        //$this->dispatch('open-modal', id: 'edit-modal');
     }
 
-    public function limpiarFiltros()
+    public function abrirModal2($id)
     {
-        $this->unidad = '';
-        $this->presentacion = '';
-        $this->estado = '';
+        $this->medicamentoId = $id;
+        $this->loadData();
+        $this->dispatch('open-modal', id: 'edit-medicamento');
     }
 
-    public function seleccionarItem($itemId)
+
+        public function loadData()
     {
-        if ($this->itemSeleccionado === $itemId) {
-            // Si ya está abierto, lo cerramos y activamos la bandera
-            $this->cerrandoItem = true;
-            $this->itemSeleccionado = null;
-        } else {
-            $this->cerrandoItem = false;
-            $this->itemSeleccionado = $itemId;
-        }
+        $this->item['nombre'] = Item::find($this->medicamentoId)->nombre;
+        $this->item['descripcion'] = Item::find($this->medicamentoId)->descripcion;
+        $this->nombre = '';
+        $this->descripcion = '';
+        $this->confirmandoEliminacion = false;
+
     }
 
-    public function obtenerItemsFiltrados($itemId)
-    {
-        return Medicamento::where('item_id', $itemId)
-            ->where('sede_id', session('sede.id'))
-            ->when($this->unidad, fn($q) => $q->where('tipo_unidad', $this->unidad))
-            ->when($this->presentacion, fn($q) => $q->where('presentacion', $this->presentacion))
-            ->when($this->estado, fn($q) => $q->where('estado', $this->estado))
-            ->get();
-    }
+
+
 
     public function render()
     {

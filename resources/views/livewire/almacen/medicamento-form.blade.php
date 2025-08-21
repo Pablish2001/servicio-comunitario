@@ -19,9 +19,9 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"    
                 x-data="{
                 nombre: @entangle('medicamento.nombre').live ,
-                conocidos: @js($nombreMedicamentosOptions),
+                items: @js($nombreMedicamentosOptions),
                 get esNuevo() {
-                    return this.nombre && !this.conocidos.includes(this.nombre);
+                    return this.nombre && !this.items.includes(this.nombre);
                 }
             }">
                     {{-- Nombre --}}

@@ -15,7 +15,7 @@ class ModalMedicamentos extends Component
     public $unidad = '';
     public $presentacion = '';
     public $estado = '';
-    public $selected = [];
+    public $selected = null;
     public $cantidades = [];
 
     protected $listeners = ['abrirModalMedicamento' => 'funcionEnModal'];
@@ -67,7 +67,7 @@ class ModalMedicamentos extends Component
         $this->unidad = '';
         $this->presentacion = '';
         $this->estado = '';
-        $this->selected = [];
+        $this->selected = null;
     }
     
     public function guardar()
@@ -105,8 +105,8 @@ class ModalMedicamentos extends Component
 
     public function eliminar()
     {
-        Medicamento::whereIn('id', $this->selected)->delete();
-        $this->selected = [];
+        Medicamento::where('id', $this->selected)->delete();
+        $this->selected = null;
         $this->loadData();
         Notification::make()
         ->title('Medicamento eliminado correctamente')

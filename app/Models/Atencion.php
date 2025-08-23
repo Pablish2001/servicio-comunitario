@@ -22,6 +22,12 @@ class Atencion extends Model
         'profesional_id',
     ];
 
+    protected $casts = [
+        'fecha_atencion' => 'datetime',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
+
     public function paciente()
     {
         return $this->belongsTo(Paciente::class);
@@ -30,5 +36,10 @@ class Atencion extends Model
     public function jornada()
     {
         return $this->belongsTo(Jornada::class);
+    }
+
+    public function profesional()
+    {
+        return $this->belongsTo(User::class, 'profesional_id');
     }
 }

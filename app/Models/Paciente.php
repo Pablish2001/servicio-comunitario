@@ -14,6 +14,10 @@ class Paciente extends Model
         'persona_id',
     ];
 
+    protected $casts = [
+        'fecha_nacimiento' => 'date',
+    ];
+
     public function persona()
     {
         return $this->belongsTo(Persona::class);
@@ -22,5 +26,10 @@ class Paciente extends Model
     public function atencions()
     {
         return $this->hasMany(Atencion::class);
+    }
+
+    public function carrera()
+    {
+        return $this->belongsTo(Carrera::class);
     }
 }

@@ -5,6 +5,7 @@ use App\Http\Controllers\JornadaController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AtencionController;
 use App\Http\Controllers\PacienteLookupController;
+use App\Http\Controllers\PacienteController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -37,6 +38,14 @@ Route::middleware(['auth'])->group(function () {
     // Para autocompletar por cédula (paciente existente)
     Route::get('/pacientes/lookup/{cedula}', [PacienteLookupController::class, 'show'])
         ->name('pacientes.lookup');
+
+    // Historial de pacientes
+    Route::get('/historial-pacientes', [PacienteController::class, 'historial'])
+        ->name('historial.pacientes');
+    Route::post('/historial-pacientes/buscar', [PacienteController::class, 'buscarHistorial'])
+        ->name('historial.pacientes.buscar');
+    Route::get('/detalle-atencion/{id}', [PacienteController::class, 'detalleAtencion'])
+        ->name('detalle.atencion');
 
     });
 

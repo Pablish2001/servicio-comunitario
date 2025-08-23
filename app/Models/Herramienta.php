@@ -11,6 +11,7 @@ class Herramienta extends Model
         'estado',
         'cantidad',
         'sede_id',
+        'item_id',
     ];
 
     public function item()

@@ -81,7 +81,6 @@
                     <x-filament::input.select                         
                         label="Unidad de Medida"
                         wire:model.defer="medicamento.tipo_unidad"
-                        required
                         class="w-full pl-4 pr-12 py-3 bg-gray-50 dark:bg-gray-700 border-2 border-gray-200 dark:border-gray-600 rounded-xl text-gray-900 dark:text-gray-100 focus:border-blue-500 focus:bg-white dark:focus:bg-gray-600 focus:outline-none focus:ring-0 transition-all duration-200 hover:border-gray-300 dark:hover:border-gray-500 appearance-none cursor-pointer"
                         >
 
@@ -102,7 +101,6 @@
                     <x-filament::input.select
                         label="Presentación"
                         wire:model.defer="medicamento.presentacion"
-                        required
                         class="w-full pl-4 pr-12 py-3 bg-gray-50 dark:bg-gray-700 border-2 border-gray-200 dark:border-gray-600 rounded-xl text-gray-900 dark:text-gray-100 focus:border-blue-500 focus:bg-white dark:focus:bg-gray-600 focus:outline-none focus:ring-0 transition-all duration-200 hover:border-gray-300 dark:hover:border-gray-500 appearance-none cursor-pointer"
                     >
                         <option value="Suspension">🥤 Suspensión</option>
@@ -119,7 +117,6 @@
                     <x-filament::input.select
                         label="Estado del Producto"
                         wire:model.defer="medicamento.estado"
-                        required
                         class="w-full pl-4 pr-12 py-3 bg-gray-50 dark:bg-gray-700 border-2 border-gray-200 dark:border-gray-600 rounded-xl text-gray-900 dark:text-gray-100 focus:border-blue-500 focus:bg-white dark:focus:bg-gray-600 focus:outline-none focus:ring-0 transition-all duration-200 hover:border-gray-300 dark:hover:border-gray-500 appearance-none cursor-pointer"     
                     >
                         <option value="nuevo">✨ Nuevo/Sellado</option>

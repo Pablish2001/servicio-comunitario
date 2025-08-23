@@ -50,7 +50,7 @@
 
                 {{-- Formulario Herramientas --}}
                 <div x-show="tab === 'herramientas'" x-cloak>
-                    <h1 class="text-lg font-semibold">Registrar Herramienta</h1>
+                    @livewire('almacen.herramienta-form')
                 </div>
             </div>
         </div>

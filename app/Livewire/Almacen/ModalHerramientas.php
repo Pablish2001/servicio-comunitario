@@ -3,22 +3,22 @@
 namespace App\Livewire\Almacen;
 
 use Livewire\Component;
-use App\Models\Medicamento;
+use App\Models\Herramienta;
 use App\Models\Item;
 use Filament\Notifications\Notification;
 
-class ModalMedicamentos extends Component
+class ModalHerramientas extends Component
 {
-    public $medicamentoId = null;
-    public $medicamentos;
+    public $herramientaId = null;
+    public $herramientas;
     public $nombre = '';
-    public $unidad = '';
-    public $presentacion = '';
+    public $categoria = '';
     public $estado = '';
     public $selected = null;
     public $cantidades = [];
 
-    protected $listeners = ['abrirModalMedicamento' => 'funcionEnModal'];
+
+    protected $listeners = ['abrirModalHerramienta' => 'funcionEnModal'];
 
     public function reload()
     {
@@ -26,7 +26,7 @@ class ModalMedicamentos extends Component
 
     public function funcionEnModal($itemId)
     {
-        $this->medicamentoId = $itemId; 
+        $this->herramientaId = $itemId; 
         $this->loadData();
         $this->dispatch('open-modal', id: 'edit-modal');
     }
@@ -35,28 +35,25 @@ class ModalMedicamentos extends Component
     {
         $sedeId = session('sede.id');
         $this->limpiarFiltros();
-        $this->medicamentos = Medicamento::with('item')
+        $this->herramientas = Herramienta::with('item')
         ->where('sede_id', $sedeId)
-        ->where('item_id', $this->medicamentoId)
+        ->where('item_id', $this->herramientaId)
         ->get();
-        $this->nombre = Item::where('id', $this->medicamentoId)->value('nombre');
+        $this->nombre = Item::where('id', $this->herramientaId)->value('nombre');
     }
 
     public function obtenerItemsFiltrados()
     {
-        // Si no hay medicamentos, devolver colección vacía
-        if (!$this->medicamentos) {
+        // Si no hay herramientas, devolver colección vacía
+        if (!$this->herramientas) {
             return collect();
         }
 
-        return $this->medicamentos->filter(function($medicamento) {
-            if ($this->unidad && $medicamento->tipo_unidad !== $this->unidad) {
+        return $this->herramientas->filter(function($herramienta) {
+            if ($this->categoria && $herramienta->categoria !== $this->categoria) {
                 return false;
             }
-            if ($this->presentacion && $medicamento->presentacion !== $this->presentacion) {
-                return false;
-            }
-            if ($this->estado && $medicamento->estado !== $this->estado) {
+            if ($this->estado && $herramienta->estado !== $this->estado) {
                 return false;
             }
             return true; // si pasa todos los filtros
@@ -66,8 +63,7 @@ class ModalMedicamentos extends Component
         // Método para limpiar filtros
     public function limpiarFiltros()
     {
-        $this->unidad = '';
-        $this->presentacion = '';
+        $this->categoria = '';
         $this->estado = '';
         $this->selected = null;
     }
@@ -86,11 +82,11 @@ class ModalMedicamentos extends Component
             return;
         }
 
-        foreach ($this->cantidades as $medicamentoId => $cantidad) {
-            $medicamento = Medicamento::find($medicamentoId);
-            if ($medicamento) {
-                $medicamento->cantidad = $cantidad;
-                $medicamento->save();
+        foreach ($this->cantidades as $herramientaId => $cantidad) {
+            $herramienta = Herramienta::find($herramientaId);
+            if ($herramienta) {
+                $herramienta->cantidad = $cantidad;
+                $herramienta->save();
             }
         }
 
@@ -100,24 +96,24 @@ class ModalMedicamentos extends Component
         $this->loadData(); // Recarga datos para actualizar la tabla si usas eso
 
         Notification::make()
-            ->title('Medicamento actualizado correctamente')
+            ->title('Herramienta actualizado correctamente')
             ->success()
             ->send();
     }
 
     public function eliminar()
     {
-        Medicamento::where('id', $this->selected)->delete();
+        Herramienta::where('id', $this->selected)->delete();
         $this->selected = null;
         $this->loadData();
         Notification::make()
-        ->title('Medicamento eliminado correctamente')
+        ->title('Herramienta eliminado correctamente')
         ->success()
         ->send();
     }
 
     public function render()
     {
-        return view('livewire.almacen.modal-medicamentos');
+        return view('livewire.almacen.modal-herramientas');
     }
 }

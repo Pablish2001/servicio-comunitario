@@ -3,20 +3,6 @@
 <div x-data="{ selected: @entangle('selected') }">
     <div class="flex justify-between items-center mb-4">
         <h2 class="text-xl font-bold">Items Medicamentos Registrados</h2>
-        <div>
-            <template x-if="selected">
-                <x-filament::button
-                    wire:click="eliminar"
-                    color="danger">
-                    Eliminar
-                </x-filament::button>
-            </template>
-            <template x-if="selected">
-                <x-filament::button>
-                    Editar
-                </x-filament::button>
-            </template>
-        </div>
     </div>
 
     {{-- Acordeón de items --}}

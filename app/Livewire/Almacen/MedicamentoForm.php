@@ -30,7 +30,6 @@ class MedicamentoForm extends Component
         'tipo_unidad' => '',
         'presentacion' => '',
         'estado' => '',
-        'fecha_ingreso' => '',
     ];
 
     public function mount()
@@ -39,10 +38,6 @@ class MedicamentoForm extends Component
         $this->nombreMedicamentosOptions = Item::where('tipo', 'medicamento')
             ->pluck('nombre')
             ->toArray();
-
-        if (empty($this->medicamento['fecha_ingreso'])) {
-            $this->medicamento['fecha_ingreso'] = now()->toDateString();
-        }
     }
 
     public function updatedMedicamentoNombre($value)
@@ -52,6 +47,10 @@ class MedicamentoForm extends Component
 
     public function saveMedicamento()
     {
+        $this->medicamento['tipo_unidad'] = trim($this->medicamento['tipo_unidad']) === '' ? 'Unidades' : $this->medicamento['tipo_unidad'];
+        $this->medicamento['presentacion'] = trim($this->medicamento['presentacion']) === '' ? 'Suspensión' : $this->medicamento['presentacion'];
+        $this->medicamento['estado'] = trim($this->medicamento['estado']) === '' ? 'Nuevo' : $this->medicamento['estado'];
+
         $this->validate([
             'medicamento.nombre' => 'required|string|max:255',
             'medicamento.cantidad' => 'required|integer|min:1',
@@ -105,7 +104,7 @@ class MedicamentoForm extends Component
             ->body('El medicamento ha sido guardado correctamente.')
             ->send();
 
-        $this->redirect(AlmacenResource::getUrl('index'));
+        $this->updateoptions();
         $this->reset('medicamento');
     }
 

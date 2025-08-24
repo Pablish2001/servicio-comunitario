@@ -2,13 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Paciente extends Model
 {
-    use HasFactory;
-
     protected $fillable = [
         'cedula',
         'fecha_nacimiento',
@@ -17,9 +14,18 @@ class Paciente extends Model
         'persona_id',
     ];
 
+    protected $casts = [
+        'fecha_nacimiento' => 'date',
+    ];
+
     public function persona()
     {
         return $this->belongsTo(Persona::class);
+    }
+
+    public function atencions()
+    {
+        return $this->hasMany(Atencion::class);
     }
 
     public function carrera()

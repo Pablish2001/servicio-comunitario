@@ -24,18 +24,7 @@ class DashboardController extends Controller
             ->first();
 
         if ($jornadaActiva) {
-            // Verificar si el usuario ya está relacionado a la jornada
-            $yaRelacionado = $jornadaActiva->users()->where('users.id', $user->id)->exists();
-
-            // Si no está, lo agregamos a la jornada
-            if (! $yaRelacionado) {
-                $jornadaActiva->users()->attach($user->id, [
-                    'joined_at' => now(),
-                    'status' => 'presente',
-                ]);
-            }
-
-            return redirect('/atencion-paciente');
+            return redirect('/atencions/create');
         }
 
         // Si no hay jornada activa, renderiza el dashboard

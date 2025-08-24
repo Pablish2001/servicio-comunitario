@@ -75,3 +75,29 @@ export interface User {
     updated_at: string;
     [key: string]: unknown; // This allows for additional properties...
 }
+
+export interface DetalleAtencion {
+    id: number;
+    fecha: string;
+    hora: string;
+    atendido_por: string;
+    paciente: {
+        nombre: string;
+        cedula: string;
+        genero: string;
+        fecha_nacimiento: string;
+        facultad: string;
+    };
+    signos_vitales: {
+        presion_arterial: string;
+        temperatura: string;
+        ritmo_cardiaco: string;
+        frecuencia_respiratoria: string;
+        saturacion_o2: string;
+    };
+    consulta: {
+        sintomas: string;
+        diagnostico: string;
+        tratamiento: string;
+    };
+}

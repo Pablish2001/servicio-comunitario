@@ -39,10 +39,20 @@ class HandleInertiaRequests extends Middleware
     {
         [$message, $author] = str(Inspiring::quotes()->random())->explode('-');
 
-        // Jornada activa global para la sede (hoy, sin fecha_fin)
-        $jornadaActiva = \App\Models\Jornada::whereDate('fecha_inicio', today())
-            ->whereNull('fecha_fin')
-            ->first();
+        // Jornada activa para el usuario actual (hoy, sin fecha_fin, en la sede del usuario)
+        $jornadaActiva = null;
+        if ($request->user()) {
+            $sedeId = session('sede.id');
+            if ($sedeId) {
+                $jornadaActiva = \App\Models\Jornada::whereDate('fecha_inicio', today())
+                    ->where('sede_id', $sedeId)
+                    ->whereHas('users', function ($q) use ($request) {
+                        $q->where('users.id', $request->user()->id);
+                    })
+                    ->whereNull('fecha_fin')
+                    ->first();
+            }
+        }
 
         return [
             ...parent::share($request),
@@ -57,6 +67,7 @@ class HandleInertiaRequests extends Middleware
                 'location' => $request->url(),
             ],
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
+            'csrf_token' => csrf_token(),
         ];
     }
 }

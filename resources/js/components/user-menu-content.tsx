@@ -3,7 +3,7 @@ import { UserInfo } from '@/components/user-info';
 import { useMobileNavigation } from '@/hooks/use-mobile-navigation';
 import { type User } from '@/types';
 import { Link, router } from '@inertiajs/react';
-import { LogOut, Settings } from 'lucide-react';
+import { LogOut, Settings, History } from 'lucide-react';
 
 interface UserMenuContentProps {
     user: User;
@@ -42,6 +42,12 @@ export function UserMenuContent({ user, jornada }: UserMenuContentProps & { jorn
                         </Link>
                     </DropdownMenuItem>
                 )}
+                <DropdownMenuItem asChild className="m-0 p-0 text-black hover:bg-[#3EE9FD] focus:bg-[#3EE9FD]">
+                    <Link className="flex w-full items-center px-3 py-1.5 text-black hover:text-black focus:text-black" href={route('historial.pacientes')} as="button" prefetch onClick={cleanup}>
+                        <History className="mr-2 h-4 w-4 text-black" />
+                        <span>Historial de Pacientes</span>
+                    </Link>
+                </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator className="m-0 bg-black/20" />
             <DropdownMenuItem asChild className="m-0 p-0 text-black hover:bg-[#3EE9FD] focus:bg-[#3EE9FD]">

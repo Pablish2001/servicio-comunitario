@@ -31,19 +31,37 @@ class AtencionController extends Controller
 
     $professionals = collect();
     if ($jornada) {
-        $users = $jornada->users()->wherePivot('status', 'presente')->with('persona')->get();
-        $professionals = $users->map(function($u) {
+        // Debug: Vamos a ver qué está pasando
+        \Log::info('Jornada ID: ' . $jornada->id);
+        
+        // Probar la consulta simple primero
+        $usersSimple = $jornada->users()->with('persona')->get();
+        \Log::info('Usuarios en jornada (simple): ' . $usersSimple->count());
+        
+        // Probar el método usuariosPresentes
+        $users = $jornada->usuariosPresentes(); 
+        \Log::info('Usuarios presentes (método): ' . $users->count());
+        
+        $professionals = $usersSimple->map(function($u) {
             return [
                 'id' => $u->id,
                 'nombre' => $u->persona ? $u->persona->nombre . ' ' . $u->persona->apellido : '(sin nombre)',
             ];
         });
+        
+        \Log::info('Profesionales mapeados: ' . $professionals->count());
     }
 
     return Inertia::render('AtencionPaciente', [
         'careers'       => Carrera::select('id', 'nombre')->orderBy('nombre')->get(),
         'professionals' => $professionals->values()->all(),
         'jornadaId'     => $jornadaId,
+        'debug' => [
+            'jornada_exists' => $jornada ? true : false,
+            'jornada_id' => $jornada ? $jornada->id : null,
+            'users_count' => $jornada ? $jornada->users()->count() : 0,
+            'professionals_count' => $professionals->count()
+        ]
     ]);
 }
 

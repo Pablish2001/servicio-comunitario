@@ -22,21 +22,15 @@ Route::middleware(['auth'])->group(function () {
     // Ruta al dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    // Ruta para crear una nueva jornada
-    Route::post('/jornada/iniciar', [JornadaController::class, 'iniciar'])->name('jornada.iniciar');
-
     Route::get('/donaciones', [DonacionController::class, 'index'])->name('donaciones.index');
     Route::post('/donaciones', [DonacionController::class, 'store']);
 
-    // Agregar personal a jornada
-    Route::post('/jornada/agregar-personal', [JornadaController::class, 'agregarPersonal'])->name('jornada.agregar');
-    Route::post('/jornada/quitar-personal', [JornadaController::class, 'quitarPersonal'])->name('jornada.quitar');
-    Route::post('/jornada/agregar-personal', [JornadaController::class, 'agregarPersonal'])->name('jornada.agregar-personal');
-
-    // Quitar personal de jornada
-    Route::delete('/jornada/{jornada}/quitar-personal/{user}', [JornadaController::class, 'quitarPersonal'])->name('jornada.quitar-personal');
-
-    Route::post('/validar-credenciales', [JornadaController::class, 'validarCredenciales'])->name('jornada.validar');
+    // --- Rutas de Jornada ---
+    Route::controller(JornadaController::class)->prefix('jornada')->name('jornada.')->group(function () {
+        // Rutas que NO requieren una jornada activa
+        Route::post('/iniciar', 'iniciar')->name('iniciar');
+        Route::post('/validar-credenciales', 'validarCredenciales')->name('validar');
+    });
 
     Route::resource('atencions', AtencionController::class)->only(['create','store']);
 
@@ -52,12 +46,18 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/detalle-atencion/{id}', [PacienteController::class, 'detalleAtencion'])
         ->name('detalle.atencion');
 
-    });
+});
 
-// Middleware para asegurar que la jornada le pertenece a la session
-route::middleware(['auth', 'jornada.activa'])->group(function () {
+// Rutas que requieren una jornada activa
+Route::middleware(['auth', 'jornada.activa'])->group(function () {
     Route::get('/carreras', [\App\Http\Controllers\CarreraController::class, 'index'])->name('carreras.index');
-    Route::get('/jornadas', [JornadaController::class, 'vista'])->name('jornadas');
+
+    Route::controller(JornadaController::class)->prefix('jornada')->name('jornada.')->group(function () {
+        Route::get('/', 'vista')->name('vista');
+        Route::post('/agregar-personal', 'agregarPersonal')->name('agregar-personal');
+        Route::post('/quitar-personal', 'quitarPersonal')->name('quitar-personal');
+        Route::post('/finalizar', 'finalizar')->name('finalizar');
+    });
 });
 
 require __DIR__.'/settings.php';

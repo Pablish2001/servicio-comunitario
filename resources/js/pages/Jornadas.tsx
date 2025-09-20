@@ -14,6 +14,7 @@ function JornadasInner() {
   const [cedula, setCedula] = useState("");
   const [password, setPassword] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [finalizarDialogOpen, setFinalizarDialogOpen] = useState(false);
   const [userToRemove, setUserToRemove] = useState<any>(null);
   const { showToast } = useToast();
 
@@ -53,6 +54,17 @@ function JornadasInner() {
   const ausentesFiltrados = ausentes.filter((p: Personal) =>
     p.nombre.toLowerCase().includes(busqueda.toLowerCase())
   );
+
+  const handleFinalizarJornada = () => {
+    router.post('/jornada/finalizar', {}, {
+      onSuccess: () => {
+        showToast('Jornada finalizada exitosamente.', 'success');
+      },
+      onError: (errors) => {
+        showToast(errors.jornada || 'No se pudo finalizar la jornada.', 'error');
+      }
+    });
+  };
 
   return (
     <AppLayout>
@@ -154,10 +166,13 @@ function JornadasInner() {
           <div className="flex-1 bg-white rounded-2xl p-6 shadow-md flex flex-col gap-6">
             {/* Jornadas actuales y pasadas */}
             <div className="mb-4">
-              <div className="flex items-center gap-2 mb-2">
+              <div className="flex items-center justify-between gap-2 mb-2">
                 <span className="bg-[#36A2F7] text-white px-4 py-1 rounded-lg text-sm font-bold flex items-center gap-2">
-                  <span role="img" aria-label="calendar">📅</span> {fechaJornada}
+                  <span role="img" aria-label="calendar">📅</span> {fechaJornada || 'No hay jornada activa'}
                 </span>
+                {jornada && (
+                  <Button onClick={() => setFinalizarDialogOpen(true)} className="bg-red-600 hover:bg-red-700 text-white font-bold">Finalizar Jornada</Button>
+                )}
               </div>
               {/* Historial de la jornada actual: solo última acción de cada usuario */}
                {jornada?.users?.map((u: any, i: number) => {
@@ -228,6 +243,28 @@ function JornadasInner() {
   <Button type="submit" className="bg-[#0368FE] text-white font-bold mt-2 transition-all hover:bg-[#0356d6] shadow">Agregar</Button>
 </form>
         </div>
+
+        {/* Dialog de confirmación para finalizar jornada */}
+        <Dialog open={finalizarDialogOpen} onOpenChange={setFinalizarDialogOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>¿Finalizar la jornada?</DialogTitle>
+            </DialogHeader>
+            <div className="py-2 text-gray-600">Esta acción cerrará la jornada actual y no se podrá modificar.</div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setFinalizarDialogOpen(false)}>Cancelar</Button>
+              <Button
+                className="bg-red-600 text-white hover:bg-red-700"
+                onClick={() => {
+                  handleFinalizarJornada();
+                  setFinalizarDialogOpen(false);
+                }}
+              >
+                Finalizar
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
 
       </div>
     </AppLayout>

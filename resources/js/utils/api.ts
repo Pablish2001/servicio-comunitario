@@ -2,7 +2,7 @@ import axios from 'axios';
 
 export async function validarCredenciales(cedula: string, password: string) {
     try {
-        const response = await axios.post('/validar-credenciales', { cedula, password });
+        const response = await axios.post('/jornada/validar-credenciales', { cedula, password });
         return response.data;
     } catch (error: any) {
         if (error.response && error.response.data) {

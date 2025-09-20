@@ -4,6 +4,7 @@ import { router, useForm, usePage } from '@inertiajs/react';
 import { FormEventHandler, useState } from 'react';
 import PersonalLabel from './personal-label';
 import React from "react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 
 // ...otros imports
 
@@ -33,6 +34,7 @@ export default function PersonalRegister() {
 
     const [generalError, setGeneralError] = useState('');
     const [showToast, setShowToast] = useState(false);
+    const [dialogOpen, setDialogOpen] = useState(false);
 
     // Oculta el error automáticamente después de 3 segundos
     React.useEffect(() => {
@@ -85,22 +87,30 @@ export default function PersonalRegister() {
     // Iniciar jornada: envía la lista al backend
     const iniciarJornada = () => {
         const ids = personal.map(p => p.id);
-        // Obtener fecha y hora en UTC en formato ISO (YYYY-MM-DDTHH:mm)
-        const now = new Date();
-        const fecha_inicio = now.toISOString().slice(0, 16); // UTC, formato compatible con backend
         router.post(route('jornada.iniciar'), {
-            user_ids: ids,
-            fecha_inicio
+            user_ids: ids
         }, {
             onSuccess: (page) => {
                 setShowToast(true);
-                setTimeout(() => {
-                    setShowToast(false);
-                    window.location.href = '/atencions/create';
-                }, 2000);
+                // El toast se ocultará automáticamente después de 3 segundos por el useEffect
+                // Redirigir inmediatamente usando Inertia
+                router.visit('/atencions/create');
             },
             onError: (errors) => {
-                setGeneralError('Error al iniciar jornada: ' + JSON.stringify(errors));
+                // Extraer el primer error más relevante
+                let errorMessage = 'No se pudo iniciar la jornada.';
+                
+                if (errors.jornada) {
+                    errorMessage = errors.jornada;
+                } else if (errors.sede) {
+                    errorMessage = 'No hay sede seleccionada.';
+                } else if (errors.user_ids) {
+                    errorMessage = 'Debe seleccionar al menos un miembro del personal.';
+                } else if (errors.message) {
+                    errorMessage = errors.message;
+                }
+                
+                setGeneralError(errorMessage);
                 console.error('Errores backend:', errors);
             }
         });
@@ -184,9 +194,32 @@ export default function PersonalRegister() {
                 </form>
 
                 {mostrarPersonal.length > 0 && (
-                     <Button onClick={iniciarJornada}>INICIAR JORNADA</Button>
+                     <Button onClick={() => setDialogOpen(true)}>INICIAR JORNADA</Button>
                 )}
             </div>
+
+            <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>¿Iniciar la jornada?</DialogTitle>
+                    </DialogHeader>
+                    <div className="py-2 text-gray-600">
+                        Se registrará el personal añadido y se dará comienzo a la jornada de atención.
+                    </div>
+                    <DialogFooter>
+                        <Button variant="outline" onClick={() => setDialogOpen(false)}>Cancelar</Button>
+                        <Button
+                            className="bg-blue-600 text-white hover:bg-blue-700"
+                            onClick={() => {
+                                iniciarJornada();
+                                setDialogOpen(false);
+                            }}
+                        >
+                            Iniciar
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 }

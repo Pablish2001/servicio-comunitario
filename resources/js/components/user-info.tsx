@@ -11,7 +11,7 @@ interface UserInfoProps {
 
 export function UserInfo({ user, showEmail = false, className = '', textColor = 'white' }: UserInfoProps) {
     const getInitials = useInitials();
-    console.log('UserInfo', user);
+    //console.log('UserInfo', user);
     // Manejo seguro de nombres
     const fullName = user.persona?.nombre || (user.persona ? `${user.persona.nombre} ${user.persona.apellido}` : 'xd');
     const email = user.persona?.email || '';

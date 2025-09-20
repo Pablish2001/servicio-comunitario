@@ -104,7 +104,7 @@ class JornadaController extends Controller
         }
 
         // Obtener la jornada más reciente (iniciada o pendiente)
-        $jornada = Jornada::latest()->first();
+        $jornada = Jornada::latest('id')->first();
 
         if (! $jornada) {
             // Crear jornada pendiente si no existe ninguna
@@ -135,10 +135,10 @@ class JornadaController extends Controller
 
             return back()->withErrors(['cedula' => 'Usuario ya está en la jornada.']);
         }
-        // Agregar usuario con estado 'pendiente' (porque la jornada no inició)
+        // Agregar usuario con estado 'presente'
         $jornada->users()->attach($user->id, [
             'joined_at' => now(),
-            'status' => 'pendiente',
+            'status' => 'presente',
         ]);
         // Registrar acción de entrada
         JornadaUserAccion::create([
@@ -212,5 +212,22 @@ class JornadaController extends Controller
                 ],
             ],
         ]);
+    }
+
+    // Finaliza la jornada activa
+    public function finalizar(Request $request)
+    {
+        $jornada = Jornada::whereDate('fecha_inicio', today())
+            ->whereNull('fecha_fin')
+            ->first();
+
+        if ($jornada) {
+            $jornada->fecha_fin = now();
+            $jornada->save();
+
+            return redirect()->route('dashboard')->with('success', 'Jornada finalizada exitosamente.');
+        } else {
+            return back()->withErrors(['jornada' => 'No hay una jornada activa para finalizar.']);
+        }
     }
 }

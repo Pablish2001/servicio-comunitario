@@ -2,54 +2,59 @@
 
 namespace App\Livewire\Almacen;
 
-use Livewire\Component;
-use App\Models\Medicamento;
 use App\Models\Item;
+use App\Models\Medicamento;
 use Filament\Notifications\Notification;
+use Livewire\Component;
 
 class ModalMedicamentos extends Component
 {
     public $medicamentoId = null;
+
     public $medicamentos;
+
     public $nombre = '';
+
     public $unidad = '';
+
     public $presentacion = '';
+
     public $estado = '';
+
     public $selected = null;
+
     public $cantidades = [];
 
     protected $listeners = ['abrirModalMedicamento' => 'funcionEnModal'];
 
-    public function reload()
-    {
-    }
+    public function reload() {}
 
     public function funcionEnModal($itemId)
     {
-        $this->medicamentoId = $itemId; 
+        $this->medicamentoId = $itemId;
         $this->loadData();
         $this->dispatch('open-modal', id: 'edit-modal');
     }
 
-        public function loadData()
+    public function loadData()
     {
         $sedeId = session('sede.id');
         $this->limpiarFiltros();
         $this->medicamentos = Medicamento::with('item')
-        ->where('sede_id', $sedeId)
-        ->where('item_id', $this->medicamentoId)
-        ->get();
+            ->where('sede_id', $sedeId)
+            ->where('item_id', $this->medicamentoId)
+            ->get();
         $this->nombre = Item::where('id', $this->medicamentoId)->value('nombre');
     }
 
     public function obtenerItemsFiltrados()
     {
         // Si no hay medicamentos, devolver colección vacía
-        if (!$this->medicamentos) {
+        if (! $this->medicamentos) {
             return collect();
         }
 
-        return $this->medicamentos->filter(function($medicamento) {
+        return $this->medicamentos->filter(function ($medicamento) {
             if ($this->unidad && $medicamento->tipo_unidad !== $this->unidad) {
                 return false;
             }
@@ -59,11 +64,12 @@ class ModalMedicamentos extends Component
             if ($this->estado && $medicamento->estado !== $this->estado) {
                 return false;
             }
+
             return true; // si pasa todos los filtros
         });
     }
 
-        // Método para limpiar filtros
+    // Método para limpiar filtros
     public function limpiarFiltros()
     {
         $this->unidad = '';
@@ -71,7 +77,7 @@ class ModalMedicamentos extends Component
         $this->estado = '';
         $this->selected = null;
     }
-    
+
     public function guardar()
     {
         $this->validate([
@@ -83,6 +89,7 @@ class ModalMedicamentos extends Component
                 ->title('No hay cantidades para actualizar')
                 ->warning()
                 ->send();
+
             return;
         }
 
@@ -111,9 +118,9 @@ class ModalMedicamentos extends Component
         $this->selected = null;
         $this->loadData();
         Notification::make()
-        ->title('Medicamento eliminado correctamente')
-        ->success()
-        ->send();
+            ->title('Medicamento eliminado correctamente')
+            ->success()
+            ->send();
     }
 
     public function render()

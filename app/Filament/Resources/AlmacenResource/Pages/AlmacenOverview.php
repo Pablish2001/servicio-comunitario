@@ -5,16 +5,14 @@ namespace App\Filament\Resources\AlmacenResource\Pages;
 use App\Filament\Resources\AlmacenResource;
 use Filament\Resources\Pages\Page;
 use Livewire\WithPagination; // si aún no lo tienes
-use Livewire\WithFileUploads; // si vas a subir archivos
-use Illuminate\Support\Collection;
 
+// si vas a subir archivos
 
 class AlmacenOverview extends Page
 {
-
     use WithPagination;
 
-        // Propiedad para controlar el medicamento seleccionado en el modal
+    // Propiedad para controlar el medicamento seleccionado en el modal
     public ?int $modalMedicamentoId = null;
 
     // Método para abrir el modal con un medicamento específico
@@ -30,5 +28,6 @@ class AlmacenOverview extends Page
     }
 
     protected static string $resource = AlmacenResource::class;
+
     protected static string $view = 'filament.resources.almacen-resource.pages.almacen-overview';
 }

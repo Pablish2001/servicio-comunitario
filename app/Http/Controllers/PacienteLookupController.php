@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-
 class PacienteLookupController extends Controller
 {
     public function show($cedula)

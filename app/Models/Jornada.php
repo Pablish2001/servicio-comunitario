@@ -52,13 +52,14 @@ class Jornada extends Model
                 $usuarios->push($user);
             }
         }
+
         return $usuarios;
     }
 
     public static function activa()
-{
-    return self::whereDate('fecha_inicio', today())
-        ->whereNull('fecha_fin')
-        ->first();
-}
+    {
+        return self::whereDate('fecha_inicio', today())
+            ->whereNull('fecha_fin')
+            ->first();
+    }
 }

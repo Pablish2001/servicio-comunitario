@@ -2,36 +2,35 @@
 
 namespace App\Livewire\Almacen;
 
-use Livewire\Component;
 use App\Models\Item;
-use App\Models\Herramienta;
 use Filament\Notifications\Notification;
+use Livewire\Component;
 
 class ItemsHerramientas extends Component
 {
-
-
-    public $item=[
+    public $item = [
         'nombre' => '',
         'descripcion' => '',
     ];
+
     public $nombre;
+
     public $descripcion;
+
     public $herramientaId = null;
+
     public bool $confirmandoEliminacion = false;
 
-    public function reload()
-    {
-    }
+    public function reload() {}
 
     public function eliminar()
     {
         $herramienta = Item::find($this->herramientaId);
         $herramienta->delete();
         Notification::make()
-        ->title('se elimino correctamente')
-        ->success()
-        ->send();
+            ->title('se elimino correctamente')
+            ->success()
+            ->send();
         $this->dispatch('close-modal', id: 'edit-herramienta');
         $this->dispatch('herramienta-actualizado', items: Item::where('tipo', 'herramienta')->get());
         $this->dispatch('herramientaActualizado');
@@ -44,39 +43,35 @@ class ItemsHerramientas extends Component
             'nombre' => 'nullable|string',
             'descripcion' => 'nullable|string',
         ]);
-        //nombre en minusculas
+        // nombre en minusculas
         $nombre = strtolower($this->nombre);
         $item = Item::where('nombre', $nombre)->first();
 
         if ($item) {
             Notification::make()
-            ->title('Esa herramienta ya existe')
-            ->danger()
-            ->send();
+                ->title('Esa herramienta ya existe')
+                ->danger()
+                ->send();
             $this->loadData();
 
         } else {
-            if ($nombre){
+            if ($nombre) {
                 Item::where('id', $this->herramientaId)->update(['nombre' => $nombre]);
             }
             if ($this->descripcion) {
                 Item::where('id', $this->herramientaId)->update(['descripcion' => $this->descripcion]);
             }
-                Notification::make()
+            Notification::make()
                 ->title('se guardo correctamente')
                 ->success()
                 ->send();
-                $this->dispatch('close-modal', id: 'edit-herramienta');
+            $this->dispatch('close-modal', id: 'edit-herramienta');
 
-            }
-            $this->dispatch('herramienta-actualizado', items: Item::where('tipo', 'herramienta')->get());
-            $this->dispatch('herramientaActualizado');
-
-
-
+        }
+        $this->dispatch('herramienta-actualizado', items: Item::where('tipo', 'herramienta')->get());
+        $this->dispatch('herramientaActualizado');
 
     }
-
 
     public function abrirModal($id)
     {
@@ -90,7 +85,7 @@ class ItemsHerramientas extends Component
         $this->dispatch('open-modal', id: 'edit-herramienta');
     }
 
-            public function loadData()
+    public function loadData()
     {
         $this->item['nombre'] = Item::find($this->herramientaId)->nombre;
         $this->item['descripcion'] = Item::find($this->herramientaId)->descripcion;
@@ -100,10 +95,9 @@ class ItemsHerramientas extends Component
 
     }
 
-
     public function render()
     {
-        return view('livewire.almacen.items-herramientas',[
+        return view('livewire.almacen.items-herramientas', [
             'herramientaItems' => Item::where('tipo', 'herramienta')->get(),
         ]);
     }

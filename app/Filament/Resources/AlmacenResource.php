@@ -52,7 +52,7 @@ class AlmacenResource extends Resource
     public static function getPages(): array
     {
         return [
-        'index' => Pages\AlmacenOverview::route('/'),
+            'index' => Pages\AlmacenOverview::route('/'),
         ];
     }
 }

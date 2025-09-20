@@ -24,11 +24,11 @@ return new class extends Migration
             $table->string('saturacion')->nullable();
             $table->dateTime('fecha_atencion'); // NUEVO CAMPO
             $table->timestamps();
-        
+
             $table->unsignedBigInteger('paciente_id');
             $table->unsignedBigInteger('jornada_id');
             $table->unsignedBigInteger('profesional_id'); // NUEVO CAMPO
-        
+
             $table->foreign('paciente_id')->references('id')->on('pacientes')->onDelete('cascade');
             $table->foreign('jornada_id')->references('id')->on('jornadas')->onDelete('cascade');
             $table->foreign('profesional_id')->references('id')->on('users')->onDelete('cascade');

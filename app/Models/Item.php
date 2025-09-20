@@ -10,18 +10,17 @@ class Item extends Model
         'nombre',
         'descripcion',
         'tipo',
-];
+    ];
 
     public function medicamentos()
     {
         return $this->hasMany(Medicamento::class);
     }
 
-        public function herramientas()
+    public function herramientas()
     {
         return $this->hasMany(Herramienta::class);
     }
-
 
     // Otros métodos y relaciones según sea necesario
 }

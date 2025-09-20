@@ -2,47 +2,45 @@
 
 namespace App\Livewire\Almacen;
 
-use Livewire\Component;
-use App\Models\Item;
 use App\Models\Herramienta;
+use App\Models\Item;
 use Filament\Notifications\Notification;
-use App\Filament\Resources\AlmacenResource;
+use Livewire\Component;
 
 class HerramientaForm extends Component
 {
-
     public $nombreHerramientasOptions = [];
+
     public bool $descripcionHabilitada = false;
+
     protected $listeners = ['herramientaActualizado' => 'updateoptions'];
 
-        public function updateoptions()
-        {
-            $this->nombreHerramientasOptions = Item::where('tipo', 'herramienta')
-        ->pluck('nombre')
-        ->toArray();
-        }
+    public function updateoptions()
+    {
+        $this->nombreHerramientasOptions = Item::where('tipo', 'herramienta')
+            ->pluck('nombre')
+            ->toArray();
+    }
 
+    public $herramienta = [
+        'nombre' => '',
+        'cantidad' => '',
+        'descripcion' => '',
+        'categoria' => '',
+        'estado' => '',
+    ];
 
-        public $herramienta = [
-            'nombre' => '',
-            'cantidad' => '',
-            'descripcion' => '',
-            'categoria' => '',
-            'estado' => '',
-        ];
-
-        public function mount()
-        {
-            // Cargar solo los items de tipo herramienta
-            $this->nombreHerramientasOptions = Item::where('tipo', 'herramienta')
-                ->pluck('nombre')
-                ->toArray();
-        }
-
+    public function mount()
+    {
+        // Cargar solo los items de tipo herramienta
+        $this->nombreHerramientasOptions = Item::where('tipo', 'herramienta')
+            ->pluck('nombre')
+            ->toArray();
+    }
 
     public function updatedHerramientaNombre($value)
     {
-        $this->descripcionHabilitada = !in_array($value, $this->nombreHerramientasOptions);
+        $this->descripcionHabilitada = ! in_array($value, $this->nombreHerramientasOptions);
     }
 
     public function saveHerramienta()
@@ -63,7 +61,7 @@ class HerramientaForm extends Component
             ->where('tipo', 'herramienta')
             ->first();
 
-        if (!$item) {
+        if (! $item) {
             $item = Item::create([
                 'nombre' => $nombre,
                 'tipo' => 'herramienta',
@@ -102,15 +100,6 @@ class HerramientaForm extends Component
         $this->updateoptions();
         $this->reset('herramienta');
     }
-
-
-
-
-
-
-
-
-
 
     public function render()
     {

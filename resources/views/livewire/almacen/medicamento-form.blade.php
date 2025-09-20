@@ -105,7 +105,7 @@
                     >
                         <option value="Suspension">🥤 Suspensión</option>
                         <option value="Tabletas">💊 Tabletas</option>
-                        <option value="Ampollas">💉 Ampollas</option>
+                        <option value="Solucion">💉 Solución</option>
                         <option value="Jarabe">🍯 Jarabe</option>
                         <option value="Crema">🧴 Crema</option>
                         <option value="Gotas">💧 Gotas</option>

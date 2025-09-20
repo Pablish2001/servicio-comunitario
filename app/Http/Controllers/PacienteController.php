@@ -17,11 +17,11 @@ class PacienteController extends Controller
     public function buscarHistorial(Request $request)
     {
         $cedula = $request->input('cedula');
-        
+
         if ($cedula) {
             // Buscar por cédula específica
             $paciente = Paciente::with('persona')->where('cedula', $cedula)->first();
-            
+
             if ($paciente) {
                 $atenciones = Atencion::where('paciente_id', $paciente->id)
                     ->with(['paciente.persona', 'profesional.persona'])
@@ -29,48 +29,60 @@ class PacienteController extends Controller
                     ->get()
                     ->map(function ($atencion) {
                         // Función helper para formatear fechas de manera segura
-                        $formatDate = function($date) {
-                            if (!$date) return null;
+                        $formatDate = function ($date) {
+                            if (! $date) {
+                                return null;
+                            }
                             if (is_string($date)) {
                                 $date = \Carbon\Carbon::parse($date);
                             }
+
                             return $date->format('d/m/Y');
                         };
 
-                        $formatTime = function($date) {
-                            if (!$date) return null;
+                        $formatTime = function ($date) {
+                            if (! $date) {
+                                return null;
+                            }
                             if (is_string($date)) {
                                 $date = \Carbon\Carbon::parse($date);
                             }
+
                             return $date->format('H:i:s');
                         };
 
                         return [
                             'id' => $atencion->id,
-                            'paciente_nombre' => $atencion->paciente->persona->nombre . ' ' . $atencion->paciente->persona->apellido,
+                            'paciente_nombre' => $atencion->paciente->persona->nombre.' '.$atencion->paciente->persona->apellido,
                             'fecha' => $formatDate($atencion->fecha_atencion) ?? $formatDate($atencion->created_at),
                             'hora' => $formatTime($atencion->fecha_atencion) ?? $formatTime($atencion->created_at),
-                            'atendido_por' => $atencion->profesional ? ($atencion->profesional->persona->nombre . ' ' . $atencion->profesional->persona->apellido) : 'No especificado',
+                            'atendido_por' => $atencion->profesional ? ($atencion->profesional->persona->nombre.' '.$atencion->profesional->persona->apellido) : 'No especificado',
                             'diagnostico' => $atencion->diagnostico ?? 'Sin diagnóstico',
                             'sintomas' => $atencion->sintomas ?? 'Sin síntomas',
                             'tratamiento' => $atencion->tratamiento ?? 'Sin tratamiento',
                         ];
                     });
-                
+
                 // Función helper para formatear fecha de nacimiento de manera segura
-                $formatBirthDate = function($date) {
-                    if (!$date) return 'No especificada';
+                $formatBirthDate = function ($date) {
+                    if (! $date) {
+                        return 'No especificada';
+                    }
                     if (is_string($date)) {
                         $date = \Carbon\Carbon::parse($date);
                     }
+
                     return $date->format('d/m/Y');
                 };
 
-                $calculateAge = function($date) {
-                    if (!$date) return null;
+                $calculateAge = function ($date) {
+                    if (! $date) {
+                        return null;
+                    }
                     if (is_string($date)) {
                         $date = \Carbon\Carbon::parse($date);
                     }
+
                     return $date->age;
                 };
 
@@ -79,26 +91,26 @@ class PacienteController extends Controller
                     'atenciones' => $atenciones,
                     'paciente' => [
                         'id' => $paciente->id,
-                        'nombre' => $paciente->persona->nombre . ' ' . $paciente->persona->apellido,
+                        'nombre' => $paciente->persona->nombre.' '.$paciente->persona->apellido,
                         'cedula' => $paciente->cedula,
                         'fecha_nacimiento' => $formatBirthDate($paciente->fecha_nacimiento),
                         'edad' => $calculateAge($paciente->fecha_nacimiento),
                         'genero' => $paciente->persona->genero ?? 'No especificado',
                         'telefono' => $paciente->persona->telefono ?? 'No especificado',
                         'direccion' => $paciente->persona->direccion ?? 'No especificada',
-                        'email' => $paciente->persona->email ?? 'No especificado'
-                    ]
+                        'email' => $paciente->persona->email ?? 'No especificado',
+                    ],
                 ]);
             } else {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Paciente no encontrado con la cédula proporcionada'
+                    'message' => 'Paciente no encontrado con la cédula proporcionada',
                 ]);
             }
         } else {
             return response()->json([
                 'success' => false,
-                'message' => 'Por favor, ingrese una cédula para buscar'
+                'message' => 'Por favor, ingrese una cédula para buscar',
             ]);
         }
     }
@@ -109,27 +121,36 @@ class PacienteController extends Controller
             ->findOrFail($id);
 
         // Función helper para formatear fechas de manera segura
-        $formatDate = function($date) {
-            if (!$date) return null;
+        $formatDate = function ($date) {
+            if (! $date) {
+                return null;
+            }
             if (is_string($date)) {
                 $date = \Carbon\Carbon::parse($date);
             }
+
             return $date->format('d/m/Y');
         };
 
-        $formatTime = function($date) {
-            if (!$date) return null;
+        $formatTime = function ($date) {
+            if (! $date) {
+                return null;
+            }
             if (is_string($date)) {
                 $date = \Carbon\Carbon::parse($date);
             }
+
             return $date->format('H:i:s');
         };
 
-        $formatBirthDate = function($date) {
-            if (!$date) return 'No especificada';
+        $formatBirthDate = function ($date) {
+            if (! $date) {
+                return 'No especificada';
+            }
             if (is_string($date)) {
                 $date = \Carbon\Carbon::parse($date);
             }
+
             return $date->format('Y-m-d');
         };
 
@@ -137,9 +158,9 @@ class PacienteController extends Controller
             'id' => $atencion->id,
             'fecha' => $formatDate($atencion->fecha_atencion) ?? $formatDate($atencion->created_at),
             'hora' => $formatTime($atencion->fecha_atencion) ?? $formatTime($atencion->created_at),
-            'atendido_por' => $atencion->profesional ? ($atencion->profesional->persona->nombre . ' ' . $atencion->profesional->persona->apellido) : 'No especificado',
+            'atendido_por' => $atencion->profesional ? ($atencion->profesional->persona->nombre.' '.$atencion->profesional->persona->apellido) : 'No especificado',
             'paciente' => [
-                'nombre' => $atencion->paciente->persona->nombre . ' ' . $atencion->paciente->persona->apellido,
+                'nombre' => $atencion->paciente->persona->nombre.' '.$atencion->paciente->persona->apellido,
                 'cedula' => $atencion->paciente->cedula,
                 'genero' => $atencion->paciente->persona->genero ?? 'No especificado',
                 'fecha_nacimiento' => $formatBirthDate($atencion->paciente->fecha_nacimiento),
@@ -160,7 +181,7 @@ class PacienteController extends Controller
         ];
 
         return Inertia::render('DetalleAtencion', [
-            'atencion' => $detalleAtencion
+            'atencion' => $detalleAtencion,
         ]);
     }
 }

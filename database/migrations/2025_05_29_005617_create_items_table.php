@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('nombre')->unique();
             $table->text('descripcion')->nullable();
-            $table->enum('tipo', ['medicamento','herramienta'])->default('medicamento');
+            $table->enum('tipo', ['medicamento', 'herramienta'])->default('medicamento');
             $table->timestamps();
         });
     }

@@ -2,26 +2,25 @@
 
 namespace App\Livewire\Almacen;
 
-use Livewire\Component;
 use App\Models\Item;
 use App\Models\Medicamento;
 use Filament\Notifications\Notification;
-use App\Filament\Resources\AlmacenResource;
-
+use Livewire\Component;
 
 class MedicamentoForm extends Component
 {
     public bool $descripcionHabilitada = false;
+
     public $nombreMedicamentosOptions = [];
+
     protected $listeners = ['medicamentoActualizado' => 'updateoptions'];
 
     public function updateoptions()
     {
         $this->nombreMedicamentosOptions = Item::where('tipo', 'medicamento')
-    ->pluck('nombre')
-    ->toArray();
+            ->pluck('nombre')
+            ->toArray();
     }
-
 
     public $medicamento = [
         'nombre' => '',
@@ -42,7 +41,7 @@ class MedicamentoForm extends Component
 
     public function updatedMedicamentoNombre($value)
     {
-        $this->descripcionHabilitada = !in_array($value, $this->nombreMedicamentosOptions);
+        $this->descripcionHabilitada = ! in_array($value, $this->nombreMedicamentosOptions);
     }
 
     public function saveMedicamento()
@@ -65,7 +64,7 @@ class MedicamentoForm extends Component
             ->where('tipo', 'medicamento')
             ->first();
 
-        if (!$item) {
+        if (! $item) {
             $item = Item::create([
                 'nombre' => $nombre,
                 'tipo' => 'medicamento',
@@ -108,10 +107,8 @@ class MedicamentoForm extends Component
         $this->reset('medicamento');
     }
 
-
     public function render()
     {
         return view('livewire.almacen.medicamento-form');
     }
-
 }

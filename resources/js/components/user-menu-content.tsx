@@ -3,7 +3,7 @@ import { UserInfo } from '@/components/user-info';
 import { useMobileNavigation } from '@/hooks/use-mobile-navigation';
 import { type User } from '@/types';
 import { Link, router } from '@inertiajs/react';
-import { History, LogOut, Settings, UserPlus } from 'lucide-react';
+import { Box, History, LogOut, UserPlus, UserRoundCog } from 'lucide-react';
 
 interface UserMenuContentProps {
     user: User;
@@ -28,22 +28,10 @@ export function UserMenuContent({ user, jornada }: UserMenuContentProps & { jorn
             </DropdownMenuLabel>
             <DropdownMenuSeparator className="m-0 bg-black/20" />
             <DropdownMenuGroup>
-                <DropdownMenuItem asChild className="m-0 p-0 text-black hover:bg-[#3EE9FD] focus:bg-[#3EE9FD]">
-                    <Link
-                        className="flex w-full items-center px-3 py-1.5 text-black hover:text-black focus:text-black"
-                        href={route('profile.edit')}
-                        as="button"
-                        prefetch
-                        onClick={cleanup}
-                    >
-                        <Settings className="mr-2 h-4 w-4 text-black" />
-                        <span>Settings</span>
-                    </Link>
-                </DropdownMenuItem>
                 {jornada && (
                     <DropdownMenuItem asChild className="m-0 p-0 text-black hover:bg-[#3EE9FD] focus:bg-[#3EE9FD]">
                         <Link
-                            className="flex w-full items-center px-3 py-1.5 text-black hover:text-black focus:text-black"
+                            className="mb-2 flex w-full cursor-pointer items-center px-3 py-1.5 text-black hover:text-black focus:text-black"
                             href={route('jornada.vista')}
                             as="button"
                             prefetch
@@ -57,7 +45,7 @@ export function UserMenuContent({ user, jornada }: UserMenuContentProps & { jorn
                 {jornada && (
                     <DropdownMenuItem asChild className="m-0 p-0 text-black hover:bg-[#3EE9FD] focus:bg-[#3EE9FD]">
                         <Link
-                            className="flex w-full items-center px-3 py-1.5 text-black hover:text-black focus:text-black"
+                            className="mb-2 flex w-full cursor-pointer items-center px-3 py-1.5 text-black hover:text-black focus:text-black"
                             href={route('atencions.create')}
                             as="button"
                             prefetch
@@ -70,7 +58,7 @@ export function UserMenuContent({ user, jornada }: UserMenuContentProps & { jorn
                 )}
                 <DropdownMenuItem asChild className="m-0 p-0 text-black hover:bg-[#3EE9FD] focus:bg-[#3EE9FD]">
                     <Link
-                        className="flex w-full items-center px-3 py-1.5 text-black hover:text-black focus:text-black"
+                        className="mb-2 flex w-full cursor-pointer items-center px-3 py-1.5 text-black hover:text-black focus:text-black"
                         href={route('historial.pacientes')}
                         as="button"
                         prefetch
@@ -83,21 +71,32 @@ export function UserMenuContent({ user, jornada }: UserMenuContentProps & { jorn
 
                 <DropdownMenuItem asChild className="m-0 p-0 text-black hover:bg-[#3EE9FD] focus:bg-[#3EE9FD]">
                     <Link
-                        className="flex w-full items-center px-3 py-1.5 text-black hover:text-black focus:text-black"
+                        className="mb-2 flex w-full cursor-pointer items-center px-3 py-1.5 text-black hover:text-black focus:text-black"
                         href={route('donaciones.index')}
                         as="button"
                         prefetch
                         onClick={cleanup}
                     >
-                        <History className="mr-2 h-4 w-4 text-black" />
+                        {/* Usa el icono Heart para donaciones */}
+                        <Box className="mr-2 h-4 w-4 text-black" />
                         <span>Donaciones</span>
                     </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild className="m-0 p-0 text-black hover:bg-[#3EE9FD] focus:bg-[#3EE9FD]">
+                    <a
+                        className="mb-2 flex w-full cursor-pointer items-center px-3 py-1.5 text-black hover:text-black focus:text-black"
+                        href="/admin"
+                        onClick={cleanup}
+                    >
+                        <UserRoundCog className="mr-2 h-4 w-4 text-black" />
+                        <span>Panel Admin</span>
+                    </a>
                 </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator className="m-0 bg-black/20" />
             <DropdownMenuItem asChild className="m-0 p-0 text-black hover:bg-[#3EE9FD] focus:bg-[#3EE9FD]">
                 <Link
-                    className="flex w-full items-center px-3 py-1.5 text-black hover:text-black focus:text-black"
+                    className="flex w-full cursor-pointer items-center px-3 py-1.5 text-black hover:text-black focus:text-black"
                     method="post"
                     href={route('logout')}
                     as="button"

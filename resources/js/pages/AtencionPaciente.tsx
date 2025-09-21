@@ -147,6 +147,7 @@ export default function Create({ careers, professionals, jornadaId }: CreateProp
                                 Nombres <span className="text-red-500">*</span>
                             </label>
                             <input
+                                required
                                 className="h-12 w-full rounded-lg border border-[#D6EFFF] bg-white px-4 py-3 text-base focus:ring-2 focus:ring-[#0368FE] focus:outline-none"
                                 value={data.nombres}
                                 onChange={(e) => setData('nombres', e.target.value)}
@@ -160,6 +161,7 @@ export default function Create({ careers, professionals, jornadaId }: CreateProp
                                 Apellidos <span className="text-red-500">*</span>
                             </label>
                             <input
+                                required
                                 className="h-12 w-full rounded-lg border border-[#D6EFFF] bg-white px-4 py-3 text-base focus:ring-2 focus:ring-[#0368FE] focus:outline-none"
                                 value={data.apellidos}
                                 onChange={(e) => setData('apellidos', e.target.value)}
@@ -173,6 +175,7 @@ export default function Create({ careers, professionals, jornadaId }: CreateProp
                                 Cédula de Identidad <span className="text-red-500">*</span>
                             </label>
                             <input
+                                required
                                 className="h-12 w-full rounded-lg border border-[#D6EFFF] bg-white px-4 py-3 text-base focus:ring-2 focus:ring-[#0368FE] focus:outline-none"
                                 value={data.cedula}
                                 onChange={onCedulaChange}
@@ -187,6 +190,7 @@ export default function Create({ careers, professionals, jornadaId }: CreateProp
                                 Género <span className="text-red-500">*</span>
                             </label>
                             <select
+                                required
                                 className="h-12 w-full rounded-lg border border-[#D6EFFF] bg-white px-4 py-3 text-base focus:ring-2 focus:ring-[#0368FE] focus:outline-none"
                                 value={data.genero}
                                 onChange={(e) => setData('genero', e.target.value)}
@@ -372,23 +376,23 @@ export default function Create({ careers, professionals, jornadaId }: CreateProp
                     <div className="mt-8 flex justify-between gap-4">
                         <button
                             type="button"
-                            className="flex items-center gap-2 rounded-lg border border-[#0E469A] bg-[#EDF9FF] px-8 py-3 text-base font-bold text-[#0E469A] transition hover:bg-[#D6EFFF]"
+                            className="flex cursor-pointer items-center gap-2 rounded-lg border border-[#0E469A] bg-[#EDF9FF] px-8 py-3 text-base font-bold text-[#0E469A] transition hover:bg-[#D6EFFF]"
                         >
                             Imprimir
                         </button>
                         <div className="flex gap-4">
                             <button
                                 type="button"
-                                className="rounded-lg bg-gray-300 px-8 py-3 text-base font-bold text-gray-700 transition hover:bg-gray-400"
+                                className="cursor-pointer rounded-lg bg-gray-300 px-8 py-3 text-base font-bold text-gray-700 transition hover:bg-gray-400"
                             >
                                 CANCELAR
                             </button>
                             <button
                                 type="submit"
                                 disabled={processing}
-                                className="rounded-lg bg-green-500 px-8 py-3 text-base font-bold text-white transition hover:bg-green-600"
+                                className="cursor-pointer rounded-lg bg-green-500 px-8 py-3 text-base font-bold text-white transition hover:bg-green-600"
                             >
-                                GUARDAR
+                                {processing ? 'Enviando...' : 'Guardar'}
                             </button>
                         </div>
                     </div>

@@ -26,113 +26,111 @@ class AtencionController extends Controller
             $jornada = \App\Models\Jornada::find($jornadaId);
         }
 
-    $professionals = collect();
-    if ($jornada) {
-        // Debug: Vamos a ver qué está pasando
-        \Log::info('Jornada ID: ' . $jornada->id);
-        
-        // Probar la consulta simple primero
-        $usersSimple = $jornada->users()->with('persona')->get();
-        \Log::info('Usuarios en jornada (simple): ' . $usersSimple->count());
-        
-        // Probar el método usuariosPresentes
-        $users = $jornada->usuariosPresentes(); 
-        \Log::info('Usuarios presentes (método): ' . $users->count());
-        
-        $professionals = $usersSimple->map(function($u) {
-            return [
-                'id' => $u->id,
-                'nombre' => $u->persona ? $u->persona->nombre . ' ' . $u->persona->apellido : '(sin nombre)',
-            ];
-        });
-        
-        \Log::info('Profesionales mapeados: ' . $professionals->count());
-    }
+        $professionals = collect();
+        if ($jornada) {
+            // Debug: Vamos a ver qué está pasando
+            \Log::info('Jornada ID: '.$jornada->id);
 
-    return Inertia::render('AtencionPaciente', [
-        'careers'       => Carrera::select('id', 'nombre')->orderBy('nombre')->get(),
-        'professionals' => $professionals->values()->all(),
-        'jornadaId'     => $jornadaId,
-        'debug' => [
-            'jornada_exists' => $jornada ? true : false,
-            'jornada_id' => $jornada ? $jornada->id : null,
-            'users_count' => $jornada ? $jornada->users()->count() : 0,
-            'professionals_count' => $professionals->count()
-        ]
-    ]);
-}
+            // Probar la consulta simple primero
+            $usersSimple = $jornada->users()->with('persona')->get();
+            \Log::info('Usuarios en jornada (simple): '.$usersSimple->count());
 
-public function store(Request $request)
-{
-    $jornadaId = session('jornada_id_actual');
+            // Probar el método usuariosPresentes
+            $users = $jornada->usuariosPresentes();
+            \Log::info('Usuarios presentes (método): '.$users->count());
 
-    
-    $data = $request->validate([
-        
-        'cedula'            => ['required', 'string'],
-        'nombres'           => ['required', 'string', 'max:255'],
-        'apellidos'         => ['required', 'string', 'max:255'],
-        'genero' => ['nullable', Rule::in(['masculino','femenino'])],
-        'fecha_nacimiento' => ['nullable', 'date'],
-        'contacto'          => ['nullable', 'string'],
-        'email'             => ['nullable', 'email'],
-        'is_student'        => ['boolean'],
-        'carrera_id'        => ['nullable', 'exists:carreras,id'],
-        'semestre'          => ['nullable', 'integer'], 
+            $professionals = $usersSimple->map(function ($u) {
+                return [
+                    'id' => $u->id,
+                    'nombre' => $u->persona ? $u->persona->nombre.' '.$u->persona->apellido : '(sin nombre)',
+                ];
+            });
 
-        
-        'sintomas'                  => ['required', 'string'],
-        'diagnostico'               => ['nullable', 'string'],
-        'tratamiento'               => ['nullable', 'string'],
-        'presion_arterial'          => ['nullable', 'string'],
-        'temperatura'               => ['nullable', 'integer'],
-        'frecuencia_cardiaca'       => ['nullable', 'integer'],
-        'frecuencia_respiratoria'   => ['nullable', 'integer'],
-        'peso'                      => ['nullable', 'integer'],
-        'saturacion'                => ['nullable', 'string'],
-        'profesional_id'            => ['required', 'exists:users,id'],
-        'jornada_id'                => ['required', 'exists:jornadas,id'],
-        
-    ]);
-
-    // Limpiar y convertir campos numéricos
-    $data['temperatura'] = $this->cleanNumericValue($data['temperatura']);
-    $data['frecuencia_cardiaca'] = $this->cleanNumericValue($data['frecuencia_cardiaca']);
-    $data['frecuencia_respiratoria'] = $this->cleanNumericValue($data['frecuencia_respiratoria']);
-    $data['peso'] = $this->cleanNumericValue($data['peso']);
-
-    $paciente = \App\Models\Paciente::where('cedula', $data['cedula'])->first();
-
-    if ($paciente) {
-        
-        $persona = $paciente->persona;
-    } else {
-        // Verificar si ya existe una persona con este email
-        $persona = null;
-        if (!empty($data['email'])) {
-            $persona = \App\Models\Persona::where('email', $data['email'])->first();
+            \Log::info('Profesionales mapeados: '.$professionals->count());
         }
 
-        // Si no existe persona con ese email, crear una nueva
-        if (!$persona) {
-            $persona = \App\Models\Persona::create([
-                'nombre'    => $data['nombres'],
-                'apellido'  => $data['apellidos'],
-                'genero'    => $data['genero'] ?? null,
-                'email'     => $data['email'] ?? null,
-                'contacto'  => $data['contacto'] ?? null,
-            ]);
-        }
-
-        // Luego crea el paciente
-        $paciente = \App\Models\Paciente::create([
-            'cedula'           => $data['cedula'],
-            'fecha_nacimiento' => $data['fecha_nacimiento'] ?? null,
-            'contacto'         => $data['contacto'] ?? null,
-            'carrera_id'       => $data['is_student'] ? ($data['carrera_id'] ?? null) : null,
-            'persona_id'       => $persona->id,
+        return Inertia::render('AtencionPaciente', [
+            'careers' => Carrera::select('id', 'nombre')->orderBy('nombre')->get(),
+            'professionals' => $professionals->values()->all(),
+            'jornadaId' => $jornadaId,
+            'debug' => [
+                'jornada_exists' => $jornada ? true : false,
+                'jornada_id' => $jornada ? $jornada->id : null,
+                'users_count' => $jornada ? $jornada->users()->count() : 0,
+                'professionals_count' => $professionals->count(),
+            ],
         ]);
     }
+
+    public function store(Request $request)
+    {
+        $jornadaId = session('jornada_id_actual');
+
+        $data = $request->validate([
+
+            'cedula' => ['required', 'string'],
+            'nombres' => ['required', 'string', 'max:255'],
+            'apellidos' => ['required', 'string', 'max:255'],
+            'genero' => ['nullable', Rule::in(['masculino', 'femenino'])],
+            'fecha_nacimiento' => ['nullable', 'date'],
+            'contacto' => ['nullable', 'string'],
+            'email' => ['nullable', 'email'],
+            'is_student' => ['boolean'],
+            'carrera_id' => ['nullable', 'exists:carreras,id'],
+            'semestre' => ['nullable', 'integer'],
+
+            'sintomas' => ['required', 'string'],
+            'diagnostico' => ['nullable', 'string'],
+            'tratamiento' => ['nullable', 'string'],
+            'presion_arterial' => ['nullable', 'string'],
+            'temperatura' => ['nullable', 'integer'],
+            'frecuencia_cardiaca' => ['nullable', 'integer'],
+            'frecuencia_respiratoria' => ['nullable', 'integer'],
+            'peso' => ['nullable', 'integer'],
+            'saturacion' => ['nullable', 'string'],
+            'profesional_id' => ['required', 'exists:users,id'],
+            'jornada_id' => ['required', 'exists:jornadas,id'],
+
+        ]);
+
+        // Limpiar y convertir campos numéricos
+        $data['temperatura'] = $this->cleanNumericValue($data['temperatura']);
+        $data['frecuencia_cardiaca'] = $this->cleanNumericValue($data['frecuencia_cardiaca']);
+        $data['frecuencia_respiratoria'] = $this->cleanNumericValue($data['frecuencia_respiratoria']);
+        $data['peso'] = $this->cleanNumericValue($data['peso']);
+
+        $paciente = \App\Models\Paciente::where('cedula', $data['cedula'])->first();
+
+        if ($paciente) {
+
+            $persona = $paciente->persona;
+        } else {
+            // Verificar si ya existe una persona con este email
+            $persona = null;
+            if (! empty($data['email'])) {
+                $persona = \App\Models\Persona::where('email', $data['email'])->first();
+            }
+
+            // Si no existe persona con ese email, crear una nueva
+            if (! $persona) {
+                $persona = \App\Models\Persona::create([
+                    'nombre' => $data['nombres'],
+                    'apellido' => $data['apellidos'],
+                    'genero' => $data['genero'] ?? null,
+                    'email' => $data['email'] ?? null,
+                    'contacto' => $data['contacto'] ?? null,
+                ]);
+            }
+
+            // Luego crea el paciente
+            $paciente = \App\Models\Paciente::create([
+                'cedula' => $data['cedula'],
+                'fecha_nacimiento' => $data['fecha_nacimiento'] ?? null,
+                'contacto' => $data['contacto'] ?? null,
+                'carrera_id' => $data['is_student'] ? ($data['carrera_id'] ?? null) : null,
+                'persona_id' => $persona->id,
+            ]);
+        }
 
         \App\Models\Atencion::create([
             'paciente_id' => $paciente->id,
@@ -150,35 +148,35 @@ public function store(Request $request)
             'fecha_atencion' => now(),
         ]);
 
-    return redirect()->route('atencions.create')
-        ->with('success', 'Atención registrada correctamente.');
-}
+        return redirect()->route('atencions.create')
+            ->with('success', 'Atención registrada correctamente.');
+    }
 
-/**
- * Limpia valores numéricos removiendo símbolos y caracteres no numéricos
- */
-private function cleanNumericValue($value)
-{
-    if (empty($value)) {
-        return null;
+    /**
+     * Limpia valores numéricos removiendo símbolos y caracteres no numéricos
+     */
+    private function cleanNumericValue($value)
+    {
+        if (empty($value)) {
+            return null;
+        }
+
+        // Remover todos los caracteres que no sean dígitos, puntos o comas
+        $cleaned = preg_replace('/[^\d.,]/', '', $value);
+
+        // Si está vacío después de limpiar, devolver null
+        if (empty($cleaned)) {
+            return null;
+        }
+
+        // Convertir coma a punto para decimales
+        $cleaned = str_replace(',', '.', $cleaned);
+
+        // Si contiene punto, es decimal, sino es entero
+        if (strpos($cleaned, '.') !== false) {
+            return (float) $cleaned;
+        } else {
+            return (int) $cleaned;
+        }
     }
-    
-    // Remover todos los caracteres que no sean dígitos, puntos o comas
-    $cleaned = preg_replace('/[^\d.,]/', '', $value);
-    
-    // Si está vacío después de limpiar, devolver null
-    if (empty($cleaned)) {
-        return null;
-    }
-    
-    // Convertir coma a punto para decimales
-    $cleaned = str_replace(',', '.', $cleaned);
-    
-    // Si contiene punto, es decimal, sino es entero
-    if (strpos($cleaned, '.') !== false) {
-        return (float) $cleaned;
-    } else {
-        return (int) $cleaned;
-    }
-}
 }

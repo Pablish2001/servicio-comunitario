@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
 
             $table->unsignedBigInteger('sede_id');
-            $table->date('fecha_inicio')->unique();
+            $table->date('fecha_inicio');
             $table->date('fecha_fin')->nullable();
 
             $table->foreign('sede_id')->references('id')->on('sedes')->onDelete('cascade');

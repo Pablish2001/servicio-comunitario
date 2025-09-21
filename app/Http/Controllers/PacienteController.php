@@ -11,42 +11,52 @@ class PacienteController extends Controller
 {
     public function historial()
     {
+        $sede = session('sede.id');
         // Obtener los 5 pacientes más recientemente atendidos
-        $pacientesRecientes = Atencion::with(['paciente.persona', 'profesional.persona'])
+        $pacientesRecientes = Atencion::with(['paciente.persona', 'profesional.persona','jornada'])
+            ->whereHas('jornada', function ($query) use ($sede) {
+                $query->where('sede_id', $sede);
+            })
             ->orderBy('fecha_atencion', 'desc')
             ->limit(5)
             ->get()
             ->map(function ($atencion) {
                 // Función helper para formatear fechas de manera segura
-                $formatDate = function($date) {
-                    if (!$date) return null;
+                $formatDate = function ($date) {
+                    if (! $date) {
+                        return null;
+                    }
                     if (is_string($date)) {
                         $date = \Carbon\Carbon::parse($date);
                     }
+
                     return $date->format('d/m/Y');
                 };
 
-                $formatTime = function($date) {
-                    if (!$date) return null;
+                $formatTime = function ($date) {
+                    if (! $date) {
+                        return null;
+                    }
                     if (is_string($date)) {
                         $date = \Carbon\Carbon::parse($date);
                     }
+
                     return $date->format('H:i');
                 };
 
                 return [
                     'id' => $atencion->id,
-                    'paciente_nombre' => $atencion->paciente->persona->nombre . ' ' . $atencion->paciente->persona->apellido,
+                    'paciente_nombre' => $atencion->paciente->persona->nombre.' '.$atencion->paciente->persona->apellido,
                     'cedula' => $atencion->paciente->cedula,
                     'fecha' => $formatDate($atencion->fecha_atencion) ?? $formatDate($atencion->created_at),
                     'hora' => $formatTime($atencion->fecha_atencion) ?? $formatTime($atencion->created_at),
-                    'atendido_por' => $atencion->profesional ? ($atencion->profesional->persona->nombre . ' ' . $atencion->profesional->persona->apellido) : 'No especificado',
+                    'atendido_por' => $atencion->profesional ? ($atencion->profesional->persona->nombre.' '.$atencion->profesional->persona->apellido) : 'No especificado',
                     'diagnostico' => $atencion->diagnostico ?? 'Sin diagnóstico',
                 ];
             });
 
         return Inertia::render('HistorialPacientes', [
-            'pacientesRecientes' => $pacientesRecientes
+            'pacientesRecientes' => $pacientesRecientes,
         ]);
     }
 
@@ -54,7 +64,7 @@ class PacienteController extends Controller
     {
         $cedula = $request->input('cedula');
         $fecha = $request->input('fecha');
-        
+
         if ($cedula) {
             // Buscar por cédula específica
             $paciente = Paciente::with('persona')->where('cedula', $cedula)->first();
@@ -62,12 +72,12 @@ class PacienteController extends Controller
             if ($paciente) {
                 $atencionesQuery = Atencion::where('paciente_id', $paciente->id)
                     ->with(['paciente.persona', 'profesional.persona']);
-                
+
                 // Si se proporciona fecha, filtrar por esa fecha
                 if ($fecha) {
                     $atencionesQuery->whereDate('fecha_atencion', $fecha);
                 }
-                
+
                 $atenciones = $atencionesQuery->orderBy('fecha_atencion', 'desc')
                     ->get()
                     ->map(function ($atencion) {
@@ -158,45 +168,51 @@ class PacienteController extends Controller
                 ->get()
                 ->map(function ($atencion) {
                     // Función helper para formatear fechas de manera segura
-                    $formatDate = function($date) {
-                        if (!$date) return null;
+                    $formatDate = function ($date) {
+                        if (! $date) {
+                            return null;
+                        }
                         if (is_string($date)) {
                             $date = \Carbon\Carbon::parse($date);
                         }
+
                         return $date->format('d/m/Y');
                     };
 
-                    $formatTime = function($date) {
-                        if (!$date) return null;
+                    $formatTime = function ($date) {
+                        if (! $date) {
+                            return null;
+                        }
                         if (is_string($date)) {
                             $date = \Carbon\Carbon::parse($date);
                         }
+
                         return $date->format('H:i:s');
                     };
 
                     return [
                         'id' => $atencion->id,
-                        'paciente_nombre' => $atencion->paciente->persona->nombre . ' ' . $atencion->paciente->persona->apellido,
+                        'paciente_nombre' => $atencion->paciente->persona->nombre.' '.$atencion->paciente->persona->apellido,
                         'cedula' => $atencion->paciente->cedula,
                         'fecha' => $formatDate($atencion->fecha_atencion) ?? $formatDate($atencion->created_at),
                         'hora' => $formatTime($atencion->fecha_atencion) ?? $formatTime($atencion->created_at),
-                        'atendido_por' => $atencion->profesional ? ($atencion->profesional->persona->nombre . ' ' . $atencion->profesional->persona->apellido) : 'No especificado',
+                        'atendido_por' => $atencion->profesional ? ($atencion->profesional->persona->nombre.' '.$atencion->profesional->persona->apellido) : 'No especificado',
                         'diagnostico' => $atencion->diagnostico ?? 'Sin diagnóstico',
                         'sintomas' => $atencion->sintomas ?? 'Sin síntomas',
                         'tratamiento' => $atencion->tratamiento ?? 'Sin tratamiento',
                     ];
                 });
-            
+
             return response()->json([
                 'success' => true,
                 'atenciones' => $atenciones,
                 'paciente' => null, // No hay un paciente específico cuando buscamos por fecha
-                'busqueda_por_fecha' => true
+                'busqueda_por_fecha' => true,
             ]);
         } else {
             return response()->json([
                 'success' => false,
-                'message' => 'Por favor, ingrese una cédula o seleccione una fecha para buscar'
+                'message' => 'Por favor, ingrese una cédula o seleccione una fecha para buscar',
             ]);
         }
     }

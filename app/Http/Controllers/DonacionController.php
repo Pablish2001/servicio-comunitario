@@ -3,11 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Donacion;
-use Illuminate\Http\Request;
-use Inertia\Inertia;
+use App\Models\Herramienta;
 use App\Models\Item;
 use App\Models\Medicamento;
-use App\Models\Herramienta;
+use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class DonacionController extends Controller
 {
@@ -64,8 +64,8 @@ class DonacionController extends Controller
             ]);
             $nombre = strtolower($article['name']);
             $item = Item::where('nombre', $nombre)
-            ->where('tipo', 'medicamento')
-            ->first();
+                ->where('tipo', 'medicamento')
+                ->first();
 
             if (! $item) {
                 $item = Item::create([
@@ -108,8 +108,8 @@ class DonacionController extends Controller
             ]);
             $nombre = strtolower($article['name']);
             $item = Item::where('nombre', $nombre)
-            ->where('tipo', 'herramienta')
-            ->first();
+                ->where('tipo', 'herramienta')
+                ->first();
 
             if (! $item) {
                 $item = Item::create([

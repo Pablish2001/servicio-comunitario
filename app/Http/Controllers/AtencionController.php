@@ -95,20 +95,34 @@ public function store(Request $request)
         
     ]);
 
+    // Limpiar y convertir campos numéricos
+    $data['temperatura'] = $this->cleanNumericValue($data['temperatura']);
+    $data['frecuencia_cardiaca'] = $this->cleanNumericValue($data['frecuencia_cardiaca']);
+    $data['frecuencia_respiratoria'] = $this->cleanNumericValue($data['frecuencia_respiratoria']);
+    $data['peso'] = $this->cleanNumericValue($data['peso']);
+
     $paciente = \App\Models\Paciente::where('cedula', $data['cedula'])->first();
 
     if ($paciente) {
         
         $persona = $paciente->persona;
     } else {
-        
-        $persona = \App\Models\Persona::create([
-            'nombre'    => $data['nombres'],
-            'apellido'  => $data['apellidos'],
-            'genero'    => $data['genero'] ?? null,
-            'email'     => $data['email'] ?? null,
-            'contacto'  => $data['contacto'] ?? null,
-        ]);
+        // Verificar si ya existe una persona con este email
+        $persona = null;
+        if (!empty($data['email'])) {
+            $persona = \App\Models\Persona::where('email', $data['email'])->first();
+        }
+
+        // Si no existe persona con ese email, crear una nueva
+        if (!$persona) {
+            $persona = \App\Models\Persona::create([
+                'nombre'    => $data['nombres'],
+                'apellido'  => $data['apellidos'],
+                'genero'    => $data['genero'] ?? null,
+                'email'     => $data['email'] ?? null,
+                'contacto'  => $data['contacto'] ?? null,
+            ]);
+        }
 
         // Luego crea el paciente
         $paciente = \App\Models\Paciente::create([
@@ -136,7 +150,35 @@ public function store(Request $request)
             'fecha_atencion' => now(),
         ]);
 
-        return redirect()->route('atencions.create')
-            ->with('success', 'Atención registrada correctamente.');
+    return redirect()->route('atencions.create')
+        ->with('success', 'Atención registrada correctamente.');
+}
+
+/**
+ * Limpia valores numéricos removiendo símbolos y caracteres no numéricos
+ */
+private function cleanNumericValue($value)
+{
+    if (empty($value)) {
+        return null;
     }
+    
+    // Remover todos los caracteres que no sean dígitos, puntos o comas
+    $cleaned = preg_replace('/[^\d.,]/', '', $value);
+    
+    // Si está vacío después de limpiar, devolver null
+    if (empty($cleaned)) {
+        return null;
+    }
+    
+    // Convertir coma a punto para decimales
+    $cleaned = str_replace(',', '.', $cleaned);
+    
+    // Si contiene punto, es decimal, sino es entero
+    if (strpos($cleaned, '.') !== false) {
+        return (float) $cleaned;
+    } else {
+        return (int) $cleaned;
+    }
+}
 }

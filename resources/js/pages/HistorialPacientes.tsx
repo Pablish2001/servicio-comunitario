@@ -9,6 +9,7 @@ import { router } from '@inertiajs/react';
 interface Atencion {
     id: number;
     paciente_nombre: string;
+    cedula?: string; // Opcional, solo cuando se busca por fecha
     fecha: string;
     hora: string;
     atendido_por: string;
@@ -30,13 +31,15 @@ interface Paciente {
 }
 
 export default function HistorialPacientes() {
-    const { ziggy, csrf_token } = usePage().props as any;
+    const { ziggy, csrf_token, pacientesRecientes } = usePage().props as any;
     const [cedula, setCedula] = useState('');
+    const [fecha, setFecha] = useState('');
     const [atenciones, setAtenciones] = useState<Atencion[]>([]);
     const [paciente, setPaciente] = useState<Paciente | null>(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [expandedAtenciones, setExpandedAtenciones] = useState<Set<number>>(new Set());
+    const [busquedaPorFecha, setBusquedaPorFecha] = useState(false);
 
     const handleBuscar = async () => {
         setLoading(true);
@@ -52,7 +55,10 @@ export default function HistorialPacientes() {
                     'X-Requested-With': 'XMLHttpRequest',
                 },
                 credentials: 'same-origin',
-                body: JSON.stringify({ cedula: cedula.trim() })
+                body: JSON.stringify({ 
+                    cedula: cedula.trim(),
+                    fecha: fecha
+                })
             });
 
             if (!response.ok) {
@@ -67,6 +73,7 @@ export default function HistorialPacientes() {
             if (data.success) {
                 setAtenciones(data.atenciones);
                 setPaciente(data.paciente);
+                setBusquedaPorFecha(data.busqueda_por_fecha || false);
             } else {
                 setError(data.message || 'Error al buscar paciente');
                 setAtenciones([]);
@@ -77,6 +84,7 @@ export default function HistorialPacientes() {
             setError(error instanceof Error ? error.message : 'Error de conexión');
             setAtenciones([]);
             setPaciente(null);
+            setBusquedaPorFecha(false);
         } finally {
             setLoading(false);
         }
@@ -92,37 +100,105 @@ export default function HistorialPacientes() {
         setExpandedAtenciones(newExpanded);
     };
 
+    const handleClickPacienteReciente = async (cedulaPaciente: string) => {
+        setCedula(cedulaPaciente);
+        setFecha('');
+        
+        // Realizar la búsqueda automáticamente
+        setLoading(true);
+        setError('');
+        
+        try {
+            const response = await fetch('/historial-pacientes/buscar', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrf_token,
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                },
+                credentials: 'same-origin',
+                body: JSON.stringify({ 
+                    cedula: cedulaPaciente.trim(),
+                    fecha: ''
+                })
+            });
+
+            if (!response.ok) {
+                if (response.status === 419) {
+                    throw new Error('Token CSRF expirado. Por favor, recarga la página.');
+                }
+                throw new Error(`Error del servidor: ${response.status}`);
+            }
+
+            const data = await response.json();
+            
+            if (data.success) {
+                setAtenciones(data.atenciones);
+                setPaciente(data.paciente);
+                setBusquedaPorFecha(data.busqueda_por_fecha || false);
+            } else {
+                setError(data.message || 'Error al buscar paciente');
+                setAtenciones([]);
+                setPaciente(null);
+            }
+        } catch (error) {
+            console.error('Error al buscar paciente:', error);
+            setError(error instanceof Error ? error.message : 'Error de conexión');
+            setAtenciones([]);
+            setPaciente(null);
+            setBusquedaPorFecha(false);
+        } finally {
+            setLoading(false);
+        }
+    };
+
     return (
         <AppLayout>
             <Head title="Historial de Pacientes" />
             
             <div className="fixed inset-0 bg-[#BEE5FA] flex flex-col items-center justify-center p-6" style={{ marginTop: '80px' }}>
-                <div className="w-full max-w-md">
+                <div className="w-full max-w-lg">
                     {/* Tarjeta principal */}
                     <div className="bg-white rounded-lg shadow-lg p-6 relative">
-                        {/* Header con título y botón cerrar */}
-                        <div className="flex justify-between items-center mb-4">
-                            <h2 className="text-xl font-bold text-gray-800">
+                        {/* Header con título, campo de fecha y botón cerrar */}
+                        <div className="flex items-center mb-4 gap-3">
+                            <h2 className="text-lg font-bold text-gray-800 flex-shrink-0">
                                 Historial de Pacientes
                             </h2>
+                            
+                            {/* Campo de fecha en el header */}
+                            <div className="flex items-center gap-1 flex-1">
+                                <Calendar className="h-4 w-4 text-gray-400 flex-shrink-0" />
+                                <Input
+                                    type="date"
+                                    value={fecha}
+                                    onChange={(e) => setFecha(e.target.value)}
+                                    className="text-xs px-2 py-1 border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-transparent min-w-0"
+                                    onKeyPress={(e) => e.key === 'Enter' && handleBuscar()}
+                                />
+                            </div>
+                            
                             <button 
                                 onClick={() => {
                                     setCedula('');
+                                    setFecha('');
                                     setAtenciones([]);
                                     setPaciente(null);
                                     setError('');
                                     setExpandedAtenciones(new Set());
+                                    setBusquedaPorFecha(false);
                                 }}
-                                className="text-gray-600 hover:text-gray-800"
+                                className="text-gray-600 hover:text-gray-800 flex-shrink-0"
                             >
-                                <X className="h-5 w-5" />
+                                <X className="h-4 w-4" />
                             </button>
                         </div>
                         
                         {/* Línea separadora */}
                         <div className="border-b border-gray-200 mb-6"></div>
                         
-                        {/* Campo de búsqueda */}
+                        {/* Campo de búsqueda por cédula */}
                         <div className="relative mb-6">
                             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
                             <Input
@@ -149,6 +225,37 @@ export default function HistorialPacientes() {
                         </Button>
                     </div>
 
+                    {/* Pacientes recientes */}
+                    {pacientesRecientes && pacientesRecientes.length > 0 && !atenciones.length && !error && (
+                        <div className="mt-6 bg-white rounded-lg shadow-lg p-4">
+                            <h3 className="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
+                                <Clock className="h-4 w-4" />
+                                Últimos pacientes atendidos
+                            </h3>
+                            <div className="space-y-2">
+                                {pacientesRecientes.map((paciente: any, index: number) => (
+                                    <div 
+                                        key={paciente.id}
+                                        onClick={() => handleClickPacienteReciente(paciente.cedula)}
+                                        className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-blue-50 cursor-pointer transition-colors"
+                                    >
+                                        <div className="flex-1">
+                                            <p className="font-medium text-gray-800 text-sm">{paciente.paciente_nombre}</p>
+                                            <p className="text-xs text-gray-500">C.I: {paciente.cedula}</p>
+                                        </div>
+                                        <div className="text-right">
+                                            <p className="text-xs text-gray-600">{paciente.fecha}</p>
+                                            <p className="text-xs text-gray-500">{paciente.hora}</p>
+                                        </div>
+                                        <div className="ml-3">
+                                            <User className="h-4 w-4 text-gray-400" />
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+
                                         {/* Resultados de la búsqueda */}
                     {error && (
                         <div className="mt-6 bg-red-50 border border-red-200 rounded-lg p-4">
@@ -156,8 +263,28 @@ export default function HistorialPacientes() {
                         </div>
                     )}
 
-                    {paciente && atenciones.length > 0 && (
+                    {atenciones.length > 0 && (
                         <div className="mt-6 bg-white rounded-lg shadow-lg p-6">
+                            {/* Título dinámico según el tipo de búsqueda */}
+                            <div className="mb-6 pb-4 border-b border-gray-200">
+                                <h3 className="text-lg font-bold text-gray-800">
+                                    {busquedaPorFecha ? 
+                                        `Atenciones del ${new Date(fecha).toLocaleDateString('es-ES', { 
+                                            weekday: 'long', 
+                                            year: 'numeric', 
+                                            month: 'long', 
+                                            day: 'numeric' 
+                                        })}` : 
+                                        `Historial de ${paciente?.nombre}`
+                                    }
+                                </h3>
+                                <p className="text-gray-600 text-sm">
+                                    {busquedaPorFecha ? 
+                                        `${atenciones.length} paciente${atenciones.length !== 1 ? 's' : ''} atendido${atenciones.length !== 1 ? 's' : ''}` :
+                                        `${atenciones.length} atención${atenciones.length !== 1 ? 'es' : ''} registrada${atenciones.length !== 1 ? 's' : ''}`
+                                    }
+                                </p>
+                            </div>
                             
                             {/* Historial de atenciones */}
                             <div className="space-y-4">
@@ -167,6 +294,11 @@ export default function HistorialPacientes() {
                                             <div className="flex-1">
                                                 <h4 className="font-semibold text-gray-800 mb-3">
                                                     {atencion.paciente_nombre}
+                                                    {busquedaPorFecha && atencion.cedula && (
+                                                        <span className="text-sm text-gray-500 font-normal ml-2">
+                                                            (C.I: {atencion.cedula})
+                                                        </span>
+                                                    )}
                                                 </h4>
                                                 
                                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm text-gray-600">

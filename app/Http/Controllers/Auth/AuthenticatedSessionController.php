@@ -54,9 +54,35 @@ class AuthenticatedSessionController extends Controller
         $request->session()->regenerate();
 
         // ✅ Guardar usuario + sede
-        $user = User::with('persona')->where('cedula', $request->cedula)->first()->toArray();
-        $request->session()->put('user_data', $user);
+        $user = User::with('persona')->where('cedula', $request->cedula)->first();
+        $request->session()->put('user_data', $user->toArray());
         $request->session()->put('sede', $sede->toArray());
+
+        // ✅ Agregar automáticamente a jornada activa si existe
+        $jornadaActiva = \App\Models\Jornada::whereDate('fecha_inicio', today())
+            ->whereNull('fecha_fin')
+            ->first();
+
+        if ($jornadaActiva) {
+            // Verificar si el usuario ya está en la jornada
+            $yaEnJornada = $jornadaActiva->users()->where('user_id', $user->id)->exists();
+            
+            if (!$yaEnJornada) {
+                // Agregar usuario a la jornada
+                $jornadaActiva->users()->attach($user->id, [
+                    'joined_at' => now(),
+                    'status' => 'presente',
+                ]);
+
+                // Registrar acción de entrada
+                \App\Models\JornadaUserAccion::create([
+                    'jornada_id' => $jornadaActiva->id,
+                    'user_id' => $user->id,
+                    'tipo' => 'entrada',
+                    'timestamp' => now(),
+                ]);
+            }
+        }
 
         return redirect()->intended(route('dashboard', absolute: false));
     }

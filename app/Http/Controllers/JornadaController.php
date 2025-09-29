@@ -245,6 +245,25 @@ class JornadaController extends Controller
             ->first();
 
         if ($jornada) {
+            // Marcar salida automática para todos los usuarios que aún estén presentes
+            $usuariosPresentes = $jornada->usuariosPresentes();
+            
+            foreach ($usuariosPresentes as $usuario) {
+                // Registrar acción de salida
+                JornadaUserAccion::create([
+                    'jornada_id' => $jornada->id,
+                    'user_id' => $usuario->id,
+                    'tipo' => 'ausente',
+                    'timestamp' => now(),
+                ]);
+
+                // Actualizar status en la tabla pivote
+                $jornada->users()->updateExistingPivot($usuario->id, [
+                    'status' => 'ausente',
+                ]);
+            }
+
+            // Finalizar la jornada
             $jornada->fecha_fin = now();
             $jornada->save();
 

@@ -41,10 +41,33 @@ class JornadaController extends Controller
             });
         }
 
+        // Obtener jornadas anteriores (últimas 10)
+        $jornadasAnteriores = Jornada::whereNotNull('fecha_fin')
+            ->orderBy('fecha_inicio', 'desc')
+            ->limit(10)
+            ->with(['users.persona', 'acciones'])
+            ->get()
+            ->map(function ($jornada) {
+                // Agrupar acciones por usuario para cada jornada anterior
+                $accionesPorUsuario = [];
+                foreach ($jornada->acciones as $accion) {
+                    $accionesPorUsuario[$accion->user_id][] = [
+                        'tipo' => $accion->tipo,
+                        'timestamp' => $accion->timestamp,
+                    ];
+                }
+                $jornada->users->map(function ($u) use ($accionesPorUsuario) {
+                    $u->acciones = $accionesPorUsuario[$u->id] ?? [];
+                    return $u;
+                });
+                return $jornada;
+            });
+
         return \Inertia\Inertia::render('Jornadas', [
             'auth' => ['user' => $user],
             'jornada' => $jornadaActiva,
             'todosUsuarios' => $todosUsuarios,
+            'jornadasAnteriores' => $jornadasAnteriores,
         ]);
     }
 

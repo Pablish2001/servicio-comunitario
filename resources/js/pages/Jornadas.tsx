@@ -7,16 +7,32 @@ import { Input } from "@/components/ui/input";
 import { usePage } from "@inertiajs/react";
 import AppLayout from '@/layouts/app-layout';
 import { Head } from '@inertiajs/react';
+import { ChevronDown, ChevronUp, Eye, EyeOff } from 'lucide-react';
 
 function JornadasInner() {
-  const { jornada, todosUsuarios } = usePage().props as any;
+  const { jornada, todosUsuarios, jornadasAnteriores } = usePage().props as any;
   const [busqueda, setBusqueda] = useState("");
   const [cedula, setCedula] = useState("");
   const [password, setPassword] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [finalizarDialogOpen, setFinalizarDialogOpen] = useState(false);
+  const [agregarPersonalDialogOpen, setAgregarPersonalDialogOpen] = useState(false);
+  const [agregarPersonalError, setAgregarPersonalError] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [userToRemove, setUserToRemove] = useState<any>(null);
+  const [expandedUsers, setExpandedUsers] = useState<Set<number>>(new Set());
+  const [showHistorial, setShowHistorial] = useState(false);
   const { showToast } = useToast();
+
+  const toggleUserExpanded = (userId: number) => {
+    const newExpanded = new Set(expandedUsers);
+    if (newExpanded.has(userId)) {
+      newExpanded.delete(userId);
+    } else {
+      newExpanded.add(userId);
+    }
+    setExpandedUsers(newExpanded);
+  };
 
   // Si hay jornada activa, extrae personal y fecha
   type Personal = { nombre: string; status: string; hora: string; id?: number };
@@ -166,83 +182,248 @@ function JornadasInner() {
           <div className="flex-1 bg-white rounded-2xl p-6 shadow-md flex flex-col gap-6">
             {/* Jornadas actuales y pasadas */}
             <div className="mb-4">
-              <div className="flex items-center justify-between gap-2 mb-2">
+              <div className="flex items-center justify-between gap-2 mb-4">
                 <span className="bg-[#36A2F7] text-white px-4 py-1 rounded-lg text-sm font-bold flex items-center gap-2">
                   <span role="img" aria-label="calendar">📅</span> {fechaJornada || 'No hay jornada activa'}
                 </span>
-                {jornada && (
-                  <Button onClick={() => setFinalizarDialogOpen(true)} className="bg-red-600 hover:bg-red-700 text-white font-bold">Finalizar Jornada</Button>
-                )}
+                <div className="flex gap-2">
+                  {jornada && (
+                    <>
+                      <Button 
+                        onClick={() => setAgregarPersonalDialogOpen(true)}
+                        className="bg-green-600 hover:bg-green-700 text-white font-bold"
+                      >
+                        + Agregar Personal
+                      </Button>
+                      <Button 
+                        onClick={() => setFinalizarDialogOpen(true)} 
+                        className="bg-red-600 hover:bg-red-700 text-white font-bold"
+                      >
+                        Finalizar Jornada
+                      </Button>
+                    </>
+                  )}
+                </div>
               </div>
-              {/* Historial de la jornada actual: solo última acción de cada usuario */}
+              {/* Historial de la jornada actual: todas las entradas/salidas */}
                {jornada?.users?.map((u: any, i: number) => {
   const nombre = (u.persona?.nombre || "") + " " + (u.persona?.apellido || "");
-  // Mostrar solo la última entrada y salida
-  const entrada = u.acciones?.filter((a: any) => a.tipo === 'entrada').slice(-1)[0]?.timestamp;
-  const salida = u.acciones?.filter((a: any) => a.tipo === 'ausente').slice(-1)[0]?.timestamp;
+  const acciones = u.acciones || [];
+  
+  // Agrupar entradas y salidas en pares
+  const pares: Array<{entrada?: any, salida?: any}> = [];
+  const entradas = acciones.filter((a: any) => a.tipo === 'entrada');
+  const salidas = acciones.filter((a: any) => a.tipo === 'ausente');
+  
+  const maxLength = Math.max(entradas.length, salidas.length);
+  for (let i = 0; i < maxLength; i++) {
+    pares.push({
+      entrada: entradas[i],
+      salida: salidas[i]
+    });
+  }
+
+  const isExpanded = expandedUsers.has(u.id);
+  const hasMultipleEntries = pares.length > 1;
+
   return (
-    <div key={u.id || nombre + i} className="bg-white border rounded-lg p-4 mb-3 flex flex-col md:flex-row md:items-center gap-2 md:gap-4 shadow-sm">
-      <div className="flex items-center gap-3 flex-1">
-        <span className="text-[#36A2F7] text-2xl">👤</span>
-        <span className="font-bold text-black text-base">{nombre}</span>
+    <div key={u.id || nombre + i} className="bg-white border rounded-lg p-4 mb-3 shadow-sm">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3 flex-1">
+          <span className="text-[#36A2F7] text-2xl">👤</span>
+          <span className="font-bold text-black text-base">{nombre}</span>
+          {hasMultipleEntries && (
+            <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full font-semibold">
+              {pares.length} {pares.length === 1 ? 'registro' : 'registros'}
+            </span>
+          )}
+        </div>
+        {hasMultipleEntries && (
+          <button 
+            onClick={() => toggleUserExpanded(u.id)}
+            className="text-gray-600 hover:text-gray-800 p-1"
+          >
+            {isExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+          </button>
+        )}
       </div>
-      <div className="flex flex-col md:flex-row md:items-center gap-1 md:gap-4">
-        <span className="text-xs font-bold px-2 py-1 rounded bg-green-100 text-green-700">ENTRADA: {entrada ? new Date(entrada).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '-'}</span>
-        <span className={`text-xs font-bold px-2 py-1 rounded ${salida ? 'bg-red-100 text-red-700' : 'bg-gray-100 text-gray-400'}`}>SALIDA: {salida ? new Date(salida).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '-'}</span>
+
+      {/* Mostrar solo el último registro o todos si está expandido */}
+      <div className="mt-3 space-y-2">
+        {(isExpanded ? pares : pares.slice(-1)).map((par, idx) => (
+          <div key={idx} className="flex flex-col md:flex-row md:items-center gap-2 md:gap-4 pl-11">
+            <span className="text-xs font-bold px-2 py-1 rounded bg-green-100 text-green-700">
+              ENTRADA: {par.entrada ? new Date(par.entrada.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '-'}
+            </span>
+            <span className={`text-xs font-bold px-2 py-1 rounded ${par.salida ? 'bg-red-100 text-red-700' : 'bg-gray-100 text-gray-400'}`}>
+              SALIDA: {par.salida ? new Date(par.salida.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '-'}
+            </span>
+          </div>
+        ))}
       </div>
     </div>
   );
 })}
             </div>
+
+            {/* Botón para mostrar historial de jornadas anteriores */}
+            <div className="mt-6">
+              <Button 
+                onClick={() => setShowHistorial(!showHistorial)}
+                variant="outline"
+                className="w-full"
+              >
+                {showHistorial ? 'Ocultar' : 'Ver'} Historial de Jornadas Anteriores
+              </Button>
+            </div>
+
+            {/* Historial de jornadas anteriores */}
+            {showHistorial && jornadasAnteriores && jornadasAnteriores.length > 0 && (
+              <div className="mt-4 space-y-4 max-h-[500px] overflow-y-auto">
+                <h3 className="text-lg font-bold text-[#0E469A]">Jornadas Anteriores</h3>
+                {jornadasAnteriores.map((jornadaAnterior: any) => {
+                  const fechaAnterior = new Date(jornadaAnterior.fecha_inicio).toLocaleDateString('es-ES', { 
+                    weekday: 'short', 
+                    year: 'numeric', 
+                    month: 'short', 
+                    day: 'numeric' 
+                  });
+                  
+                  return (
+                    <div key={jornadaAnterior.id} className="border rounded-lg p-4 bg-gray-50">
+                      <div className="flex items-center gap-2 mb-3">
+                        <span className="bg-gray-600 text-white px-3 py-1 rounded text-xs font-bold">
+                          📅 {fechaAnterior}
+                        </span>
+                      </div>
+                      
+                      {jornadaAnterior.users?.map((u: any) => {
+                        const nombre = (u.persona?.nombre || "") + " " + (u.persona?.apellido || "");
+                        const acciones = u.acciones || [];
+                        const entradas = acciones.filter((a: any) => a.tipo === 'entrada');
+                        const salidas = acciones.filter((a: any) => a.tipo === 'ausente');
+                        
+                        return (
+                          <div key={u.id} className="bg-white border rounded p-3 mb-2">
+                            <div className="flex items-center gap-2 mb-2">
+                              <span className="text-gray-600 text-sm">👤</span>
+                              <span className="font-semibold text-sm text-black">{nombre}</span>
+                            </div>
+                            <div className="space-y-1 pl-6">
+                              {entradas.map((entrada: any, idx: number) => (
+                                <div key={idx} className="flex gap-2 text-xs">
+                                  <span className="px-2 py-0.5 rounded bg-green-50 text-green-700">
+                                    E: {new Date(entrada.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                  </span>
+                                  {salidas[idx] && (
+                                    <span className="px-2 py-0.5 rounded bg-red-50 text-red-700">
+                                      S: {new Date(salidas[idx].timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                    </span>
+                                  )}
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
           </div>
         </div>
 
-        {/* Inputs para agregar personal */}
-        <div className="flex justify-center mt-8 w-full max-w-4xl">
-          <form
-  onSubmit={async (e) => {
-    e.preventDefault();
-    await router.post(
-      '/jornada/agregar-personal',
-      { cedula, password },
-      {
-        preserveScroll: true,
-        onSuccess: (page) => {
-          showToast(((page.props as any)?.flash?.success || 'Personal agregado a la jornada.'), 'success');
-          setCedula('');
-          setPassword('');
-          setTimeout(() => router.reload({ only: ['jornada', 'todosUsuarios'], preserveUrl: true }), 250); // Forzar recarga
-        },
-        onError: (errors) => {
-          showToast(errors?.cedula || errors?.password || 'No se pudo agregar el personal.', 'error');
-        },
-        onFinish: () => {},
-      }
-    );
-  }}
-  className="flex flex-col gap-4 bg-white p-8 rounded-2xl shadow-lg w-full max-w-md border border-[#E0EFFF] animate-fade-in"
->
-  <h2 className="text-xl font-bold text-[#0368FE] mb-2 text-center">Agregar Personal a la Jornada</h2>
-  <Input
-    type="text"
-    placeholder="Cédula del personal"
-    value={cedula}
-    onChange={(e) => setCedula(e.target.value)}
-    className="bg-white border border-gray-300 rounded-lg px-4 py-3 text-base shadow-md focus:ring-2 focus:ring-[#0368FE] focus:border-[#0368FE] placeholder:text-gray-400"
-    autoFocus
-    required
-  />
-  <Input
-    type="password"
-    placeholder="Contraseña"
-    value={password}
-    onChange={(e) => setPassword(e.target.value)}
-    className="bg-white border border-gray-300 rounded-lg px-4 py-3 text-base shadow-md focus:ring-2 focus:ring-[#0368FE] focus:border-[#0368FE] placeholder:text-gray-400"
-    required
-  />
-  <Button type="submit" className="bg-[#0368FE] text-white font-bold mt-2 transition-all hover:bg-[#0356d6] shadow">Agregar</Button>
-</form>
-        </div>
+        {/* Dialog para agregar personal */}
+        <Dialog open={agregarPersonalDialogOpen} onOpenChange={(open) => {
+          setAgregarPersonalDialogOpen(open);
+          if (!open) {
+            setAgregarPersonalError('');
+            setCedula('');
+            setPassword('');
+          }
+        }}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle>Agregar Personal a la Jornada</DialogTitle>
+            </DialogHeader>
+            
+            {agregarPersonalError && (
+              <div className="bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-lg mb-4">
+                <p className="text-sm font-medium">{agregarPersonalError}</p>
+              </div>
+            )}
+
+            <form
+              onSubmit={async (e) => {
+                e.preventDefault();
+                setAgregarPersonalError('');
+                
+                await router.post(
+                  '/jornada/agregar-personal',
+                  { cedula, password },
+                  {
+                    preserveScroll: true,
+                    onSuccess: (page) => {
+                      showToast(((page.props as any)?.flash?.success || 'Personal agregado a la jornada.'), 'success');
+                      setCedula('');
+                      setPassword('');
+                      setAgregarPersonalError('');
+                      setAgregarPersonalDialogOpen(false);
+                      setTimeout(() => router.reload({ only: ['jornada', 'todosUsuarios'], preserveUrl: true }), 250);
+                    },
+                    onError: (errors) => {
+                      const errorMsg = errors?.cedula || errors?.password || 'No se pudo agregar el personal.';
+                      setAgregarPersonalError(errorMsg);
+                    },
+                    onFinish: () => {},
+                  }
+                );
+              }}
+              className="space-y-4"
+            >
+              <div>
+                <label className="block text-sm font-medium mb-2">Cédula del personal</label>
+                <Input
+                  type="text"
+                  placeholder="Ingrese la cédula"
+                  value={cedula}
+                  onChange={(e) => setCedula(e.target.value)}
+                  autoFocus
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-2">Contraseña</label>
+                <div className="relative">
+                  <Input
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Ingrese la contraseña"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    className="pr-10"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                  >
+                    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                  </button>
+                </div>
+              </div>
+              <DialogFooter>
+                <Button type="button" variant="outline" onClick={() => setAgregarPersonalDialogOpen(false)}>
+                  Cancelar
+                </Button>
+                <Button type="submit" className="bg-green-600 hover:bg-green-700">
+                  Agregar
+                </Button>
+              </DialogFooter>
+            </form>
+          </DialogContent>
+        </Dialog>
 
         {/* Dialog de confirmación para finalizar jornada */}
         <Dialog open={finalizarDialogOpen} onOpenChange={setFinalizarDialogOpen}>

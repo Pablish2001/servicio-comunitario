@@ -287,27 +287,78 @@ export default function Create({ careers, professionals, jornadaId }: CreateProp
 
                     {/* Signos vitales */}
                     <h2 className="mb-4 border-b border-[#D6EFFF] pb-2 text-2xl font-bold text-[#0E469A]">Signos Vitales</h2>
-                    <div className="mb-6 grid grid-cols-5 gap-6">
-                        {(
-                            [
-                                { label: 'Presión arterial', field: 'presion_arterial', placeholder: '120/80 mmHg' },
-                                { label: 'Temperatura', field: 'temperatura', placeholder: '36.5 ºC' },
-                                { label: 'Ritmo cardíaco', field: 'frecuencia_cardiaca', placeholder: '80 lpm' },
-                                { label: 'Frec. respiratoria', field: 'frecuencia_respiratoria', placeholder: '16 rpm' },
-                                { label: 'Saturación O₂', field: 'saturacion', placeholder: '98%' },
-                            ] as { label: string; field: keyof CreateFormData; placeholder: string }[]
-                        ).map((item) => (
-                            <div key={item.field}>
-                                <label className="mb-2 block font-semibold text-[#0E469A]">{item.label}</label>
-                                <input
-                                    className="h-12 w-full rounded-lg border border-[#D6EFFF] bg-white px-4 py-3 text-base focus:ring-2 focus:ring-[#0368FE] focus:outline-none"
-                                    value={data[item.field] as string}
-                                    onChange={(e) => setData(item.field, e.target.value)}
-                                    placeholder={item.placeholder}
-                                />
-                                {errors[item.field] && <p className="text-sm text-red-600">{errors[item.field]}</p>}
-                            </div>
-                        ))}
+                    <div className="mb-6 grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+                        {/* Columna 1 */}
+                        <div>
+                            <label className="mb-2 block font-semibold text-[#0E469A]">Presión arterial</label>
+                            <input
+                                className="h-12 w-full rounded-lg border border-[#D6EFFF] bg-white px-4 py-3 text-base focus:ring-2 focus:ring-[#0368FE] focus:outline-none"
+                                value={data.presion_arterial}
+                                onChange={(e) => setData('presion_arterial', e.target.value)}
+                                placeholder="120/80 mmHg"
+                            />
+                            {errors.presion_arterial && <p className="text-sm text-red-600">{errors.presion_arterial}</p>}
+                        </div>
+                        <div>
+                            <label className="mb-2 block font-semibold text-[#0E469A]">Temperatura (°C)</label>
+                            <input
+                                type="number"
+                                step="0.1"
+                                className="h-12 w-full rounded-lg border border-[#D6EFFF] bg-white px-4 py-3 text-base focus:ring-2 focus:ring-[#0368FE] focus:outline-none"
+                                value={data.temperatura}
+                                onChange={(e) => setData('temperatura', e.target.value)}
+                                placeholder="36.5"
+                            />
+                            {errors.temperatura && <p className="text-sm text-red-600">{errors.temperatura}</p>}
+                        </div>
+
+                        {/* Columna 2 */}
+                        <div>
+                            <label className="mb-2 block font-semibold text-[#0E469A]">Ritmo cardíaco (lpm)</label>
+                            <input
+                                type="number"
+                                className="h-12 w-full rounded-lg border border-[#D6EFFF] bg-white px-4 py-3 text-base focus:ring-2 focus:ring-[#0368FE] focus:outline-none"
+                                value={data.frecuencia_cardiaca}
+                                onChange={(e) => setData('frecuencia_cardiaca', e.target.value)}
+                                placeholder="80"
+                            />
+                            {errors.frecuencia_cardiaca && <p className="text-sm text-red-600">{errors.frecuencia_cardiaca}</p>}
+                        </div>
+                        <div>
+                            <label className="mb-2 block font-semibold text-[#0E469A]">Frec. respiratoria (rpm)</label>
+                            <input
+                                type="number"
+                                className="h-12 w-full rounded-lg border border-[#D6EFFF] bg-white px-4 py-3 text-base focus:ring-2 focus:ring-[#0368FE] focus:outline-none"
+                                value={data.frecuencia_respiratoria}
+                                onChange={(e) => setData('frecuencia_respiratoria', e.target.value)}
+                                placeholder="16"
+                            />
+                            {errors.frecuencia_respiratoria && <p className="text-sm text-red-600">{errors.frecuencia_respiratoria}</p>}
+                        </div>
+
+                        {/* Columna 3 */}
+                        <div>
+                            <label className="mb-2 block font-semibold text-[#0E469A]">Saturación O₂ (%)</label>
+                            <input
+                                className="h-12 w-full rounded-lg border border-[#D6EFFF] bg-white px-4 py-3 text-base focus:ring-2 focus:ring-[#0368FE] focus:outline-none"
+                                value={data.saturacion}
+                                onChange={(e) => setData('saturacion', e.target.value)}
+                                placeholder="98"
+                            />
+                            {errors.saturacion && <p className="text-sm text-red-600">{errors.saturacion}</p>}
+                        </div>
+                        <div>
+                            <label className="mb-2 block font-semibold text-[#0E469A]">Peso (kg)</label>
+                            <input
+                                type="number"
+                                step="0.1"
+                                className="h-12 w-full rounded-lg border border-[#D6EFFF] bg-white px-4 py-3 text-base focus:ring-2 focus:ring-[#0368FE] focus:outline-none"
+                                value={data.peso}
+                                onChange={(e) => setData('peso', e.target.value)}
+                                placeholder="70.5"
+                            />
+                            {errors.peso && <p className="text-sm text-red-600">{errors.peso}</p>}
+                        </div>
                     </div>
 
                     {/* Información de la consulta */}

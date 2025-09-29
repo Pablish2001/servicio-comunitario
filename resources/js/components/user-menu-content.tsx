@@ -29,9 +29,9 @@ export function UserMenuContent({ user, jornada }: UserMenuContentProps & { jorn
             <DropdownMenuSeparator className="m-0 bg-black/20" />
             <DropdownMenuGroup>
                 {jornada && (
-                    <DropdownMenuItem asChild className="m-0 p-0 text-black hover:bg-[#3EE9FD] focus:bg-[#3EE9FD]">
+                     <DropdownMenuItem asChild className="m-0 p-0 text-black focus:bg-[#1E90FF]">
                         <Link
-                            className="mb-2 flex w-full cursor-pointer items-center px-3 py-1.5 text-black hover:text-black focus:text-black"
+                            className="mb-2 flex w-full cursor-pointer items-center px-3 py-1.5"
                             href={route('jornada.vista')}
                             as="button"
                             prefetch

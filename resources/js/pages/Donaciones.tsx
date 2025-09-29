@@ -526,7 +526,7 @@ function DonationFormInner() {
                     <button
                         type="submit"
                         disabled={isSubmitting}
-                        className="rounded bg-green-600 px-6 py-2 text-white hover:bg-green-700 disabled:opacity-50"
+                        className="cursor-pointer rounded bg-green-600 px-6 py-2 text-white hover:bg-green-700 disabled:opacity-50"
                     >
                         {isSubmitting ? 'Enviando...' : 'Guardar Donación'}
                     </button>

@@ -43,9 +43,9 @@ export function UserMenuContent({ user, jornada }: UserMenuContentProps & { jorn
                     </DropdownMenuItem>
                 )}
                 {jornada && (
-                    <DropdownMenuItem asChild className="m-0 p-0 text-black hover:bg-[#3EE9FD] focus:bg-[#3EE9FD]">
+                    <DropdownMenuItem asChild className="m-0 p-0 text-black focus:bg-[#1E90FF]">
                         <Link
-                            className="mb-2 flex w-full cursor-pointer items-center px-3 py-1.5 text-black hover:text-black focus:text-black"
+                            className="mb-2 flex w-full cursor-pointer items-center px-3 py-1.5"
                             href={route('atencions.create')}
                             as="button"
                             prefetch
@@ -56,9 +56,9 @@ export function UserMenuContent({ user, jornada }: UserMenuContentProps & { jorn
                         </Link>
                     </DropdownMenuItem>
                 )}
-                <DropdownMenuItem asChild className="m-0 p-0 text-black hover:bg-[#3EE9FD] focus:bg-[#3EE9FD]">
+                <DropdownMenuItem asChild className="m-0 p-0 text-black focus:bg-[#1E90FF]">
                     <Link
-                        className="mb-2 flex w-full cursor-pointer items-center px-3 py-1.5 text-black hover:text-black focus:text-black"
+                        className="mb-2 flex w-full cursor-pointer items-center px-3 py-1.5"
                         href={route('historial.pacientes')}
                         as="button"
                         prefetch
@@ -69,9 +69,9 @@ export function UserMenuContent({ user, jornada }: UserMenuContentProps & { jorn
                     </Link>
                 </DropdownMenuItem>
 
-                <DropdownMenuItem asChild className="m-0 p-0 text-black hover:bg-[#3EE9FD] focus:bg-[#3EE9FD]">
+                <DropdownMenuItem asChild className="m-0 p-0 text-black focus:bg-[#1E90FF]">
                     <Link
-                        className="mb-2 flex w-full cursor-pointer items-center px-3 py-1.5 text-black hover:text-black focus:text-black"
+                        className="mb-2 flex w-full cursor-pointer items-center px-3 py-1.5"
                         href={route('donaciones.index')}
                         as="button"
                         prefetch
@@ -82,21 +82,19 @@ export function UserMenuContent({ user, jornada }: UserMenuContentProps & { jorn
                         <span>Donaciones</span>
                     </Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem asChild className="m-0 p-0 text-black hover:bg-[#3EE9FD] focus:bg-[#3EE9FD]">
-                    <a
-                        className="mb-2 flex w-full cursor-pointer items-center px-3 py-1.5 text-black hover:text-black focus:text-black"
-                        href="/admin"
-                        onClick={cleanup}
-                    >
-                        <UserRoundCog className="mr-2 h-4 w-4 text-black" />
-                        <span>Panel Admin</span>
-                    </a>
-                </DropdownMenuItem>
+                {user.isAdmind == true && (
+                    <DropdownMenuItem asChild className="m-0 p-0 text-black focus:bg-[#1E90FF]">
+                        <a className="mb-2 flex w-full cursor-pointer items-center px-3 py-1.5" href="/admin" onClick={cleanup}>
+                            <UserRoundCog className="mr-2 h-4 w-4 text-black" />
+                            <span>Panel Admin</span>
+                        </a>
+                    </DropdownMenuItem>
+                )}
             </DropdownMenuGroup>
             <DropdownMenuSeparator className="m-0 bg-black/20" />
-            <DropdownMenuItem asChild className="m-0 p-0 text-black hover:bg-[#3EE9FD] focus:bg-[#3EE9FD]">
+            <DropdownMenuItem asChild className="m-0 p-0 text-black focus:bg-[#1E90FF]">
                 <Link
-                    className="flex w-full cursor-pointer items-center px-3 py-1.5 text-black hover:text-black focus:text-black"
+                    className="mb-2 flex w-full cursor-pointer items-center px-3 py-1.5"
                     method="post"
                     href={route('logout')}
                     as="button"

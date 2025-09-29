@@ -1,7 +1,6 @@
-import { router } from '@inertiajs/react';
-import { useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { useState } from 'react';
 
 type PersonalLabelProps = {
     name: string;
@@ -25,7 +24,12 @@ export default function PersonalLabel({ name, userId, onRemove }: PersonalLabelP
                 <img src="/person-icon.png" alt="person icon" />
                 <p className="font-bold">{userId}</p>
                 <p className="font-bold">{name}</p>
-                <button type="button" onClick={() => setDialogOpen(true)} className="ml-auto font-bold text-red-600 hover:text-red-800" aria-label={`Quitar a ${name}`}>
+                <button
+                    type="button"
+                    onClick={() => setDialogOpen(true)}
+                    className="ml-auto cursor-pointer font-bold text-red-600 hover:text-red-800"
+                    aria-label={`Quitar a ${name}`}
+                >
                     X
                 </button>
             </li>
@@ -34,15 +38,12 @@ export default function PersonalLabel({ name, userId, onRemove }: PersonalLabelP
                     <DialogHeader>
                         <DialogTitle>¿Quitar a {name} de la lista?</DialogTitle>
                     </DialogHeader>
-                    <div className="py-2 text-gray-600">
-                        Esta acción quitará al usuario de la lista de personal para la jornada actual.
-                    </div>
+                    <div className="py-2 text-gray-600">Esta acción quitará al usuario de la lista de personal para la jornada actual.</div>
                     <DialogFooter>
-                        <Button variant="outline" onClick={() => setDialogOpen(false)}>Cancelar</Button>
-                        <Button
-                            className="bg-red-600 text-white hover:bg-red-700"
-                            onClick={handleRemoveConfirm}
-                        >
+                        <Button variant="outline" onClick={() => setDialogOpen(false)}>
+                            Cancelar
+                        </Button>
+                        <Button className="bg-red-600 text-white hover:bg-red-700" onClick={handleRemoveConfirm}>
                             Quitar
                         </Button>
                     </DialogFooter>

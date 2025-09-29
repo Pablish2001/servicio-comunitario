@@ -1,10 +1,9 @@
 import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { router, useForm, usePage } from '@inertiajs/react';
-import { FormEventHandler, useState } from 'react';
+import React, { FormEventHandler, useState } from 'react';
 import PersonalLabel from './personal-label';
-import React from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 
 // ...otros imports
 
@@ -47,17 +46,21 @@ export default function PersonalRegister() {
     const { auth } = usePage().props as any;
     const [personal, setPersonal] = useState<any[]>(() => {
         // Al cargar, agrega automáticamente al usuario autenticado si no está
-        return auth && auth.user ? [{
-            id: auth.user.id,
-            cedula: auth.user.cedula,
-            persona: auth.user.persona
-        }] : [];
+        return auth && auth.user
+            ? [
+                  {
+                      id: auth.user.id,
+                      cedula: auth.user.cedula,
+                      persona: auth.user.persona,
+                  },
+              ]
+            : [];
     });
     // Agregar usuario por cédula y contraseña (simula validación local, o puedes hacer petición al backend para validar)
     const submit: FormEventHandler = async (e) => {
         e.preventDefault();
         setGeneralError('');
-        if (personal.find(p => p.cedula === form.data.cedula)) {
+        if (personal.find((p) => p.cedula === form.data.cedula)) {
             setGeneralError('Usuario ya está en la lista');
             return;
         }
@@ -65,14 +68,17 @@ export default function PersonalRegister() {
         const { validarCredenciales } = await import('../utils/api');
         const result = await validarCredenciales(form.data.cedula, form.data.password);
         if (result.success) {
-            setPersonal([...personal, {
-                id: result.user.id,
-                cedula: result.user.cedula,
-                persona: {
-                    nombre: result.user.persona.nombre,
-                    apellido: result.user.persona.apellido
-                }
-            }]);
+            setPersonal([
+                ...personal,
+                {
+                    id: result.user.id,
+                    cedula: result.user.cedula,
+                    persona: {
+                        nombre: result.user.persona.nombre,
+                        apellido: result.user.persona.apellido,
+                    },
+                },
+            ]);
             form.reset();
         } else {
             setGeneralError(result.message || 'Credenciales inválidas');
@@ -81,57 +87,58 @@ export default function PersonalRegister() {
 
     // Eliminar usuario de la lista temporal
     const eliminarPersonal = (cedula: number) => {
-        setPersonal(personal.filter(p => p.cedula !== cedula));
+        setPersonal(personal.filter((p) => p.cedula !== cedula));
     };
 
     // Iniciar jornada: envía la lista al backend
     const iniciarJornada = () => {
-        const ids = personal.map(p => p.id);
-        router.post(route('jornada.iniciar'), {
-            user_ids: ids
-        }, {
-            onSuccess: (page) => {
-                setShowToast(true);
-                // El toast se ocultará automáticamente después de 3 segundos por el useEffect
-                // Redirigir inmediatamente usando Inertia
-                router.visit('/atencions/create');
+        const ids = personal.map((p) => p.id);
+        router.post(
+            route('jornada.iniciar'),
+            {
+                user_ids: ids,
             },
-            onError: (errors) => {
-                // Extraer el primer error más relevante
-                let errorMessage = 'No se pudo iniciar la jornada.';
-                
-                if (errors.jornada) {
-                    errorMessage = errors.jornada;
-                } else if (errors.sede) {
-                    errorMessage = 'No hay sede seleccionada.';
-                } else if (errors.user_ids) {
-                    errorMessage = 'Debe seleccionar al menos un miembro del personal.';
-                } else if (errors.message) {
-                    errorMessage = errors.message;
-                }
-                
-                setGeneralError(errorMessage);
-                console.error('Errores backend:', errors);
-            }
-        });
+            {
+                onSuccess: (page) => {
+                    setShowToast(true);
+                    // El toast se ocultará automáticamente después de 3 segundos por el useEffect
+                    // Redirigir inmediatamente usando Inertia
+                    router.visit('/atencions/create');
+                },
+                onError: (errors) => {
+                    // Extraer el primer error más relevante
+                    let errorMessage = 'No se pudo iniciar la jornada.';
+
+                    if (errors.jornada) {
+                        errorMessage = errors.jornada;
+                    } else if (errors.sede) {
+                        errorMessage = 'No hay sede seleccionada.';
+                    } else if (errors.user_ids) {
+                        errorMessage = 'Debe seleccionar al menos un miembro del personal.';
+                    } else if (errors.message) {
+                        errorMessage = errors.message;
+                    }
+
+                    setGeneralError(errorMessage);
+                    console.error('Errores backend:', errors);
+                },
+            },
+        );
     };
 
     const mostrarPersonal = personal;
-
 
     return (
         <div className="flex h-100 w-200 flex-col justify-between gap-4 rounded-md bg-[#EDF9FF] p-4 text-black">
             {/* Toast de éxito */}
             {showToast && (
-                <div className="fixed top-6 right-6 z-50 rounded-lg bg-green-500 px-6 py-3 text-white shadow-lg animate-fade-in">
+                <div className="animate-fade-in fixed top-6 right-6 z-50 rounded-lg bg-green-500 px-6 py-3 text-white shadow-lg">
                     Jornada creada exitosamente
                 </div>
             )}
             {/* Banner de error */}
             {generalError && (
-                <div className="mb-4 rounded-md bg-red-100 border border-red-400 px-4 py-2 text-red-800 font-semibold">
-                    {generalError}
-                </div>
+                <div className="mb-4 rounded-md border border-red-400 bg-red-100 px-4 py-2 font-semibold text-red-800">{generalError}</div>
             )}
             <div className="flex flex-col gap-2">
                 <div className="flex items-center gap-1">
@@ -194,7 +201,9 @@ export default function PersonalRegister() {
                 </form>
 
                 {mostrarPersonal.length > 0 && (
-                     <Button onClick={() => setDialogOpen(true)}>INICIAR JORNADA</Button>
+                    <Button onClick={() => setDialogOpen(true)} className="cursor-pointer">
+                        INICIAR JORNADA
+                    </Button>
                 )}
             </div>
 
@@ -203,11 +212,11 @@ export default function PersonalRegister() {
                     <DialogHeader>
                         <DialogTitle>¿Iniciar la jornada?</DialogTitle>
                     </DialogHeader>
-                    <div className="py-2 text-gray-600">
-                        Se registrará el personal añadido y se dará comienzo a la jornada de atención.
-                    </div>
+                    <div className="py-2 text-gray-600">Se registrará el personal añadido y se dará comienzo a la jornada de atención.</div>
                     <DialogFooter>
-                        <Button variant="outline" onClick={() => setDialogOpen(false)}>Cancelar</Button>
+                        <Button variant="outline" onClick={() => setDialogOpen(false)}>
+                            Cancelar
+                        </Button>
                         <Button
                             className="bg-blue-600 text-white hover:bg-blue-700"
                             onClick={() => {

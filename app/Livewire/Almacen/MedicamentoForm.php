@@ -48,7 +48,7 @@ class MedicamentoForm extends Component
     {
         $this->medicamento['tipo_unidad'] = trim($this->medicamento['tipo_unidad']) === '' ? 'Unidades' : $this->medicamento['tipo_unidad'];
         $this->medicamento['presentacion'] = trim($this->medicamento['presentacion']) === '' ? 'Suspensión' : $this->medicamento['presentacion'];
-        $this->medicamento['estado'] = trim($this->medicamento['estado']) === '' ? 'Nuevo' : $this->medicamento['estado'];
+        $this->medicamento['estado'] = trim($this->medicamento['estado']) === '' ? 'nuevo' : $this->medicamento['estado'];
 
         $this->validate([
             'medicamento.nombre' => 'required|string|max:255',

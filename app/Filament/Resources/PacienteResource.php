@@ -46,7 +46,7 @@ class PacienteResource extends Resource
         return $table->columns([
             Tables\Columns\TextColumn::make('persona.nombre'),
             Tables\Columns\TextColumn::make('cedula'),
-            Tables\Columns\TextColumn::make('carrera'),
+            Tables\Columns\TextColumn::make('carrera.nombre'),
         ]);
     }
 

@@ -2,10 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
-use App\Models\User;
 use App\Models\Persona;
+use App\Models\User;
+use Illuminate\Database\Seeder;
 
 class AdminUserSeeder extends Seeder
 {
@@ -14,7 +13,7 @@ class AdminUserSeeder extends Seeder
      */
     public function run(): void
     {
-    // Crea una persona asociada al usuario
+        // Crea una persona asociada al usuario
         $persona = Persona::create([
             'nombre' => 'Pablo',
             'apellido' => 'Jimenez',

@@ -66,8 +66,8 @@ class AuthenticatedSessionController extends Controller
         if ($jornadaActiva) {
             // Verificar si el usuario ya está en la jornada
             $yaEnJornada = $jornadaActiva->users()->where('user_id', $user->id)->exists();
-            
-            if (!$yaEnJornada) {
+
+            if (! $yaEnJornada) {
                 // Agregar usuario a la jornada
                 $jornadaActiva->users()->attach($user->id, [
                     'joined_at' => now(),

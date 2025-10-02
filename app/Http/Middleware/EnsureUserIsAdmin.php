@@ -21,7 +21,7 @@ class EnsureUserIsAdmin
         if (! $user || ! $user->isAdmind) {
             session()->flash('not_admin', 'No tienes permisos para acceder al panel de administración.');
 
-        return redirect()->route('dashboard')->with('not_admin', 'No tienes permisos para acceder al panel de administración.');
+            return redirect()->route('dashboard')->with('not_admin', 'No tienes permisos para acceder al panel de administración.');
         }
 
         return $next($request);

@@ -58,8 +58,10 @@ class JornadaController extends Controller
                 }
                 $jornada->users->map(function ($u) use ($accionesPorUsuario) {
                     $u->acciones = $accionesPorUsuario[$u->id] ?? [];
+
                     return $u;
                 });
+
                 return $jornada;
             });
 
@@ -247,7 +249,7 @@ class JornadaController extends Controller
         if ($jornada) {
             // Marcar salida automática para todos los usuarios que aún estén presentes
             $usuariosPresentes = $jornada->usuariosPresentes();
-            
+
             foreach ($usuariosPresentes as $usuario) {
                 // Registrar acción de salida
                 JornadaUserAccion::create([

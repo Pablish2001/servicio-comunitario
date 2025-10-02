@@ -13,7 +13,7 @@ class PacienteController extends Controller
     {
         $sede = session('sede.id');
         // Obtener los 5 pacientes más recientemente atendidos
-        $pacientesRecientes = Atencion::with(['paciente.persona', 'profesional.persona','jornada'])
+        $pacientesRecientes = Atencion::with(['paciente.persona', 'profesional.persona', 'jornada'])
             ->whereHas('jornada', function ($query) use ($sede) {
                 $query->where('sede_id', $sede);
             })

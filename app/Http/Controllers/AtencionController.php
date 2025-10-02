@@ -29,20 +29,20 @@ class AtencionController extends Controller
         $professionals = collect();
         if ($jornada) {
             // Obtener solo los usuarios que están presentes (más entradas que salidas)
-            $users = $jornada->usuariosPresentes(); 
-            
-            $professionals = $users->map(function($u) {
+            $users = $jornada->usuariosPresentes();
+
+            $professionals = $users->map(function ($u) {
                 return [
                     'id' => $u->id,
-                    'nombre' => $u->persona ? $u->persona->nombre . ' ' . $u->persona->apellido : '(sin nombre)',
+                    'nombre' => $u->persona ? $u->persona->nombre.' '.$u->persona->apellido : '(sin nombre)',
                 ];
             });
         }
 
         return Inertia::render('AtencionPaciente', [
-            'careers'       => Carrera::select('id', 'nombre')->orderBy('nombre')->get(),
+            'careers' => Carrera::select('id', 'nombre')->orderBy('nombre')->get(),
             'professionals' => $professionals->values()->all(),
-            'jornadaId'     => $jornadaId,
+            'jornadaId' => $jornadaId,
         ]);
     }
 

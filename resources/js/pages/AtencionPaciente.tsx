@@ -148,7 +148,7 @@ export default function Create({ careers, professionals, jornadaId }: CreateProp
                             </label>
                             <input
                                 required
-                                className="h-12 w-full rounded-lg border border-[#D6EFFF] bg-white px-4 py-3 text-base focus:ring-2 focus:ring-[#0368FE] focus:outline-none"
+                                className="h-12 w-full rounded-lg border border-[#D6EFFF] bg-white px-4 py-3 text-base focus:ring-2 focus:ring-[#0368FE] focus:outline-none dark:text-black"
                                 value={data.nombres}
                                 onChange={(e) => setData('nombres', e.target.value)}
                                 placeholder="Nombres del paciente"
@@ -162,7 +162,7 @@ export default function Create({ careers, professionals, jornadaId }: CreateProp
                             </label>
                             <input
                                 required
-                                className="h-12 w-full rounded-lg border border-[#D6EFFF] bg-white px-4 py-3 text-base focus:ring-2 focus:ring-[#0368FE] focus:outline-none"
+                                className="h-12 w-full rounded-lg border border-[#D6EFFF] bg-white px-4 py-3 text-base focus:ring-2 focus:ring-[#0368FE] focus:outline-none dark:text-black"
                                 value={data.apellidos}
                                 onChange={(e) => setData('apellidos', e.target.value)}
                                 placeholder="Apellidos del paciente"
@@ -176,7 +176,7 @@ export default function Create({ careers, professionals, jornadaId }: CreateProp
                             </label>
                             <input
                                 required
-                                className="h-12 w-full rounded-lg border border-[#D6EFFF] bg-white px-4 py-3 text-base focus:ring-2 focus:ring-[#0368FE] focus:outline-none"
+                                className="h-12 w-full rounded-lg border border-[#D6EFFF] bg-white px-4 py-3 text-base focus:ring-2 focus:ring-[#0368FE] focus:outline-none dark:text-black"
                                 value={data.cedula}
                                 onChange={onCedulaChange}
                                 onBlur={() => lookupByCedula(data.cedula)}
@@ -191,7 +191,7 @@ export default function Create({ careers, professionals, jornadaId }: CreateProp
                             </label>
                             <select
                                 required
-                                className="h-12 w-full rounded-lg border border-[#D6EFFF] bg-white px-4 py-3 text-base focus:ring-2 focus:ring-[#0368FE] focus:outline-none"
+                                className="h-12 w-full rounded-lg border border-[#D6EFFF] bg-white px-4 py-3 text-base focus:ring-2 focus:ring-[#0368FE] focus:outline-none dark:text-black"
                                 value={data.genero}
                                 onChange={(e) => setData('genero', e.target.value)}
                             >
@@ -206,7 +206,7 @@ export default function Create({ careers, professionals, jornadaId }: CreateProp
                             <label className="mb-2 block font-semibold text-[#0E469A]">Fecha de nacimiento</label>
                             <input
                                 type="date"
-                                className="h-12 w-full rounded-lg border border-[#D6EFFF] bg-white px-4 py-3 text-base focus:ring-2 focus:ring-[#0368FE] focus:outline-none"
+                                className="h-12 w-full rounded-lg border border-[#D6EFFF] bg-white px-4 py-3 text-base focus:ring-2 focus:ring-[#0368FE] focus:outline-none dark:text-black"
                                 value={data.fecha_nacimiento}
                                 onChange={(e) => setData('fecha_nacimiento', e.target.value)}
                             />
@@ -218,7 +218,7 @@ export default function Create({ careers, professionals, jornadaId }: CreateProp
                                 Número de teléfono <span className="text-gray-400">(Opcional)</span>
                             </label>
                             <input
-                                className="h-12 w-full rounded-lg border border-[#D6EFFF] bg-white px-4 py-3 text-base focus:ring-2 focus:ring-[#0368FE] focus:outline-none"
+                                className="h-12 w-full rounded-lg border border-[#D6EFFF] bg-white px-4 py-3 text-base focus:ring-2 focus:ring-[#0368FE] focus:outline-none dark:text-black"
                                 value={data.contacto}
                                 onChange={(e) => setData('contacto', e.target.value)}
                                 placeholder="Número de teléfono"
@@ -231,7 +231,7 @@ export default function Create({ careers, professionals, jornadaId }: CreateProp
                                 Correo electrónico <span className="text-gray-400">(Opcional)</span>
                             </label>
                             <input
-                                className="h-12 w-full rounded-lg border border-[#D6EFFF] bg-white px-4 py-3 text-base focus:ring-2 focus:ring-[#0368FE] focus:outline-none"
+                                className="h-12 w-full rounded-lg border border-[#D6EFFF] bg-white px-4 py-3 text-base focus:ring-2 focus:ring-[#0368FE] focus:outline-none dark:text-black"
                                 value={data.email}
                                 onChange={(e) => setData('email', e.target.value)}
                                 placeholder="Correo electrónico"
@@ -256,7 +256,7 @@ export default function Create({ careers, professionals, jornadaId }: CreateProp
                             <div>
                                 <label className="mb-2 block font-semibold text-[#0E469A]">Carrera</label>
                                 <select
-                                    className="h-12 w-full rounded-lg border border-[#D6EFFF] bg-white px-4 py-3 text-base focus:ring-2 focus:ring-[#0368FE] focus:outline-none"
+                                    className="h-12 w-full rounded-lg border border-[#D6EFFF] bg-white px-4 py-3 text-base focus:ring-2 focus:ring-[#0368FE] focus:outline-none dark:text-black"
                                     value={data.carrera_id}
                                     onChange={(e) => setData('carrera_id', e.target.value)}
                                 >
@@ -275,7 +275,7 @@ export default function Create({ careers, professionals, jornadaId }: CreateProp
                                     type="number"
                                     min="1"
                                     max="9"
-                                    className="h-12 w-full rounded-lg border border-[#D6EFFF] bg-white px-4 py-3 text-base focus:ring-2 focus:ring-[#0368FE] focus:outline-none"
+                                    className="h-12 w-full rounded-lg border border-[#D6EFFF] bg-white px-4 py-3 text-base focus:ring-2 focus:ring-[#0368FE] focus:outline-none dark:text-black"
                                     value={data.semestre}
                                     onChange={(e) => setData('semestre', e.target.value)}
                                     placeholder="Semestre"
@@ -287,12 +287,12 @@ export default function Create({ careers, professionals, jornadaId }: CreateProp
 
                     {/* Signos vitales */}
                     <h2 className="mb-4 border-b border-[#D6EFFF] pb-2 text-2xl font-bold text-[#0E469A]">Signos Vitales</h2>
-                    <div className="mb-6 grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+                    <div className="mb-6 grid grid-cols-1 gap-x-8 gap-y-6 md:grid-cols-2">
                         {/* Columna 1 */}
                         <div>
                             <label className="mb-2 block font-semibold text-[#0E469A]">Presión arterial</label>
                             <input
-                                className="h-12 w-full rounded-lg border border-[#D6EFFF] bg-white px-4 py-3 text-base focus:ring-2 focus:ring-[#0368FE] focus:outline-none"
+                                className="h-12 w-full rounded-lg border border-[#D6EFFF] bg-white px-4 py-3 text-base focus:ring-2 focus:ring-[#0368FE] focus:outline-none dark:text-black"
                                 value={data.presion_arterial}
                                 onChange={(e) => setData('presion_arterial', e.target.value)}
                                 placeholder="120/80 mmHg"
@@ -304,7 +304,7 @@ export default function Create({ careers, professionals, jornadaId }: CreateProp
                             <input
                                 type="number"
                                 step="0.1"
-                                className="h-12 w-full rounded-lg border border-[#D6EFFF] bg-white px-4 py-3 text-base focus:ring-2 focus:ring-[#0368FE] focus:outline-none"
+                                className="h-12 w-full rounded-lg border border-[#D6EFFF] bg-white px-4 py-3 text-base focus:ring-2 focus:ring-[#0368FE] focus:outline-none dark:text-black"
                                 value={data.temperatura}
                                 onChange={(e) => setData('temperatura', e.target.value)}
                                 placeholder="36.5"
@@ -317,7 +317,7 @@ export default function Create({ careers, professionals, jornadaId }: CreateProp
                             <label className="mb-2 block font-semibold text-[#0E469A]">Ritmo cardíaco (lpm)</label>
                             <input
                                 type="number"
-                                className="h-12 w-full rounded-lg border border-[#D6EFFF] bg-white px-4 py-3 text-base focus:ring-2 focus:ring-[#0368FE] focus:outline-none"
+                                className="h-12 w-full rounded-lg border border-[#D6EFFF] bg-white px-4 py-3 text-base focus:ring-2 focus:ring-[#0368FE] focus:outline-none dark:text-black"
                                 value={data.frecuencia_cardiaca}
                                 onChange={(e) => setData('frecuencia_cardiaca', e.target.value)}
                                 placeholder="80"
@@ -328,7 +328,7 @@ export default function Create({ careers, professionals, jornadaId }: CreateProp
                             <label className="mb-2 block font-semibold text-[#0E469A]">Frec. respiratoria (rpm)</label>
                             <input
                                 type="number"
-                                className="h-12 w-full rounded-lg border border-[#D6EFFF] bg-white px-4 py-3 text-base focus:ring-2 focus:ring-[#0368FE] focus:outline-none"
+                                className="h-12 w-full rounded-lg border border-[#D6EFFF] bg-white px-4 py-3 text-base focus:ring-2 focus:ring-[#0368FE] focus:outline-none dark:text-black"
                                 value={data.frecuencia_respiratoria}
                                 onChange={(e) => setData('frecuencia_respiratoria', e.target.value)}
                                 placeholder="16"
@@ -340,7 +340,7 @@ export default function Create({ careers, professionals, jornadaId }: CreateProp
                         <div>
                             <label className="mb-2 block font-semibold text-[#0E469A]">Saturación O₂ (%)</label>
                             <input
-                                className="h-12 w-full rounded-lg border border-[#D6EFFF] bg-white px-4 py-3 text-base focus:ring-2 focus:ring-[#0368FE] focus:outline-none"
+                                className="h-12 w-full rounded-lg border border-[#D6EFFF] bg-white px-4 py-3 text-base focus:ring-2 focus:ring-[#0368FE] focus:outline-none dark:text-black"
                                 value={data.saturacion}
                                 onChange={(e) => setData('saturacion', e.target.value)}
                                 placeholder="98"
@@ -352,7 +352,7 @@ export default function Create({ careers, professionals, jornadaId }: CreateProp
                             <input
                                 type="number"
                                 step="0.1"
-                                className="h-12 w-full rounded-lg border border-[#D6EFFF] bg-white px-4 py-3 text-base focus:ring-2 focus:ring-[#0368FE] focus:outline-none"
+                                className="h-12 w-full rounded-lg border border-[#D6EFFF] bg-white px-4 py-3 text-base focus:ring-2 focus:ring-[#0368FE] focus:outline-none dark:text-black"
                                 value={data.peso}
                                 onChange={(e) => setData('peso', e.target.value)}
                                 placeholder="70.5"
@@ -368,7 +368,7 @@ export default function Create({ careers, professionals, jornadaId }: CreateProp
                             Síntomas <span className="text-red-500">*</span>
                         </label>
                         <textarea
-                            className="min-h-[48px] w-full rounded-lg border border-[#D6EFFF] bg-white px-4 py-3 text-base focus:ring-2 focus:ring-[#0368FE] focus:outline-none"
+                            className="min-h-[48px] w-full rounded-lg border border-[#D6EFFF] bg-white px-4 py-3 text-base focus:ring-2 focus:ring-[#0368FE] focus:outline-none dark:text-black"
                             value={data.sintomas}
                             onChange={(e) => setData('sintomas', e.target.value)}
                             placeholder="Descripción de los síntomas"
@@ -378,7 +378,7 @@ export default function Create({ careers, professionals, jornadaId }: CreateProp
                     <div className="mb-6">
                         <label className="mb-2 block font-semibold text-[#0E469A]">Diagnóstico</label>
                         <textarea
-                            className="min-h-[48px] w-full rounded-lg border border-[#D6EFFF] bg-white px-4 py-3 text-base focus:ring-2 focus:ring-[#0368FE] focus:outline-none"
+                            className="min-h-[48px] w-full rounded-lg border border-[#D6EFFF] bg-white px-4 py-3 text-base focus:ring-2 focus:ring-[#0368FE] focus:outline-none dark:text-black"
                             value={data.diagnostico}
                             onChange={(e) => setData('diagnostico', e.target.value)}
                             placeholder="Diagnóstico del paciente"
@@ -388,7 +388,7 @@ export default function Create({ careers, professionals, jornadaId }: CreateProp
                     <div className="mb-6">
                         <label className="mb-2 block font-semibold text-[#0E469A]">Tratamiento</label>
                         <textarea
-                            className="min-h-[48px] w-full rounded-lg border border-[#D6EFFF] bg-white px-4 py-3 text-base focus:ring-2 focus:ring-[#0368FE] focus:outline-none"
+                            className="min-h-[48px] w-full rounded-lg border border-[#D6EFFF] bg-white px-4 py-3 text-base focus:ring-2 focus:ring-[#0368FE] focus:outline-none dark:text-black"
                             value={data.tratamiento}
                             onChange={(e) => setData('tratamiento', e.target.value)}
                             placeholder="Tratamiento prescrito"
@@ -401,7 +401,7 @@ export default function Create({ careers, professionals, jornadaId }: CreateProp
                                 Atendido por <span className="text-red-500">*</span>
                             </label>
                             <select
-                                className="h-12 w-full rounded-lg border border-[#D6EFFF] bg-white px-4 py-3 text-base focus:ring-2 focus:ring-[#0368FE] focus:outline-none"
+                                className="h-12 w-full rounded-lg border border-[#D6EFFF] bg-white px-4 py-3 text-base focus:ring-2 focus:ring-[#0368FE] focus:outline-none dark:text-black"
                                 value={data.profesional_id}
                                 onChange={(e) => setData('profesional_id', e.target.value)}
                             >
@@ -420,24 +420,24 @@ export default function Create({ careers, professionals, jornadaId }: CreateProp
                                 type="datetime-local"
                                 value={fechaAtencion}
                                 readOnly
-                                className="h-12 w-full rounded-lg border border-[#D6EFFF] bg-white px-4 py-3 text-base focus:ring-2 focus:ring-[#0368FE] focus:outline-none"
+                                className="h-12 w-full rounded-lg border border-[#D6EFFF] bg-white px-4 py-3 text-base focus:ring-2 focus:ring-[#0368FE] focus:outline-none dark:text-black"
                             />
                         </div>
                     </div>
                     <div className="mt-8 flex justify-between gap-4">
-                        <button
+                        {/*                         <button
                             type="button"
                             className="flex cursor-pointer items-center gap-2 rounded-lg border border-[#0E469A] bg-[#EDF9FF] px-8 py-3 text-base font-bold text-[#0E469A] transition hover:bg-[#D6EFFF]"
                         >
                             Imprimir
-                        </button>
+                        </button> */}
                         <div className="flex gap-4">
-                            <button
+                            {/*                             <button
                                 type="button"
                                 className="cursor-pointer rounded-lg bg-gray-300 px-8 py-3 text-base font-bold text-gray-700 transition hover:bg-gray-400"
                             >
                                 CANCELAR
-                            </button>
+                            </button> */}
                             <button
                                 type="submit"
                                 disabled={processing}

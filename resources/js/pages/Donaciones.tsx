@@ -161,7 +161,7 @@ function DonationFormInner() {
     return (
         <AppLayout>
             <Head title="Donaciones" />
-            <form onSubmit={handleSubmit} className="mx-auto mt-6 max-w-xl space-y-4 rounded bg-white p-6 text-blue-800 shadow">
+            <form onSubmit={handleSubmit} className="mx-auto mt-6 mb-2 max-w-xl space-y-4 rounded bg-white p-6 text-blue-800 shadow">
                 {/* Formulario de donación */}
                 <div className="mx-auto max-w-4xl space-y-6 p-6">
                     <div className="space-y-2 text-center">
@@ -175,14 +175,14 @@ function DonationFormInner() {
                         <TabsList className="mb-2 grid w-full grid-cols-2 bg-white dark:bg-white">
                             <TabsTrigger
                                 value="medicamentos"
-                                className="flex items-center gap-2 data-[state=active]:bg-blue-700 data-[state=active]:text-white dark:data-[state=active]:bg-blue-700"
+                                className="flex cursor-pointer items-center gap-2 data-[state=active]:bg-blue-700 data-[state=active]:text-white dark:data-[state=active]:bg-blue-700"
                             >
                                 <Pill className="h-4 w-4" />
                                 Medicamentos
                             </TabsTrigger>
                             <TabsTrigger
                                 value="herramientas"
-                                className="flex items-center gap-2 data-[state=active]:bg-blue-700 data-[state=active]:text-white dark:data-[state=active]:bg-blue-700"
+                                className="flex cursor-pointer items-center gap-2 data-[state=active]:bg-blue-700 data-[state=active]:text-white dark:data-[state=active]:bg-blue-700"
                             >
                                 <Wrench className="h-4 w-4" />
                                 Herramientas Médicas
@@ -447,10 +447,18 @@ function DonationFormInner() {
                                             {a.name} ({a.tipo})
                                         </span>
                                         <div className="flex items-center gap-2">
-                                            <button type="button" onClick={() => toggleExpand(a.id)} className="text-blue-700 hover:underline">
+                                            <button
+                                                type="button"
+                                                onClick={() => toggleExpand(a.id)}
+                                                className="cursor-pointer text-blue-700 hover:underline"
+                                            >
                                                 {a.expanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
                                             </button>
-                                            <button type="button" onClick={() => removeArticle(a.id)} className="text-red-600 hover:underline">
+                                            <button
+                                                type="button"
+                                                onClick={() => removeArticle(a.id)}
+                                                className="cursor-pointer text-red-600 hover:underline"
+                                            >
                                                 <Trash2 className="h-4 w-4" />
                                             </button>
                                         </div>
@@ -488,10 +496,18 @@ function DonationFormInner() {
                                             {a.name} ({a.tipo})
                                         </span>
                                         <div className="flex items-center gap-2">
-                                            <button type="button" onClick={() => toggleExpand(a.id)} className="text-blue-700 hover:underline">
+                                            <button
+                                                type="button"
+                                                onClick={() => toggleExpand(a.id)}
+                                                className="cursor-pointer text-blue-700 hover:underline"
+                                            >
                                                 {a.expanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
                                             </button>
-                                            <button type="button" onClick={() => removeArticle(a.id)} className="text-red-600 hover:underline">
+                                            <button
+                                                type="button"
+                                                onClick={() => removeArticle(a.id)}
+                                                className="cursor-pointer text-red-600 hover:underline"
+                                            >
                                                 <Trash2 className="h-4 w-4" />
                                             </button>
                                         </div>

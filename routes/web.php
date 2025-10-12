@@ -15,7 +15,7 @@ use Inertia\Inertia;
 // })->name('home');
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/', [DashboardController::class, 'index'])->name('index');
 
     // Ruta para obtener usuarios presentes en la jornada actual
     Route::get('/usuarios-presentes', [UserController::class, 'presentesEnJornadaActual']);

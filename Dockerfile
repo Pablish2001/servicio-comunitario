@@ -58,4 +58,4 @@ RUN php artisan view:cache
 EXPOSE 9000
 
 # 11️⃣ CMD seguro en formato JSON
-CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=9000"]
+CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=$PORT"]

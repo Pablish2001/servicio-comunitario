@@ -432,12 +432,15 @@ export default function Create({ careers, professionals, jornadaId }: CreateProp
                             Imprimir
                         </button> */}
                         <div className="flex gap-4">
-                            {/*                             <button
+                            <button
                                 type="button"
+                                onClick={() => {
+                                    reset();
+                                }}
                                 className="cursor-pointer rounded-lg bg-gray-300 px-8 py-3 text-base font-bold text-gray-700 transition hover:bg-gray-400"
                             >
                                 CANCELAR
-                            </button> */}
+                            </button>
                             <button
                                 type="submit"
                                 disabled={processing}

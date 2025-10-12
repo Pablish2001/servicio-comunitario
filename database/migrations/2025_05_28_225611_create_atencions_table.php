@@ -17,11 +17,11 @@ return new class extends Migration
             $table->string('diagnostico')->nullable();
             $table->string('tratamiento')->nullable();
             $table->string('presion_arterial')->nullable(); // CAMBIADO A STRING
-            $table->integer('temperatura')->nullable();
-            $table->integer('frecuencia_cardiaca')->nullable();
-            $table->integer('frecuencia_respiratoria')->nullable();
-            $table->integer('peso')->nullable();
-            $table->string('saturacion')->nullable();
+            $table->float('temperatura')->nullable();
+            $table->float('frecuencia_cardiaca')->nullable();
+            $table->float('frecuencia_respiratoria')->nullable();
+            $table->float('peso')->nullable();
+            $table->float('saturacion')->nullable();
             $table->dateTime('fecha_atencion'); // NUEVO CAMPO
             $table->timestamps();
 

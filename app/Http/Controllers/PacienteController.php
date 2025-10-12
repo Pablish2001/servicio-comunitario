@@ -43,11 +43,10 @@ class PacienteController extends Controller
 
                     return $date->format('H:i');
                 };
-
                 return [
                     'id' => $atencion->id,
                     'paciente_nombre' => $atencion->paciente->persona->nombre.' '.$atencion->paciente->persona->apellido,
-                    'cedula' => $atencion->paciente->cedula,
+                    'cedula' => $atencion->paciente->cedula ?? 'No especificada',
                     'fecha' => $formatDate($atencion->fecha_atencion) ?? $formatDate($atencion->created_at),
                     'hora' => $formatTime($atencion->fecha_atencion) ?? $formatTime($atencion->created_at),
                     'atendido_por' => $atencion->profesional ? ($atencion->profesional->persona->nombre.' '.$atencion->profesional->persona->apellido) : 'No especificado',
@@ -113,6 +112,7 @@ class PacienteController extends Controller
                             'diagnostico' => $atencion->diagnostico ?? 'Sin diagnóstico',
                             'sintomas' => $atencion->sintomas ?? 'Sin síntomas',
                             'tratamiento' => $atencion->tratamiento ?? 'Sin tratamiento',
+                            'cedula' => $atencion->paciente->cedula ?? 'No especificada',
                         ];
                     });
 

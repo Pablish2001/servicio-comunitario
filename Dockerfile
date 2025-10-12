@@ -53,9 +53,10 @@ COPY . .
 RUN php artisan config:cache
 RUN php artisan route:cache
 RUN php artisan view:cache
+RUN php artisan optimize
 
 # 10️⃣ Exponer puerto de la app
 EXPOSE 9000
 
 # 11️⃣ CMD seguro en formato JSON
-CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=$PORT"]
+CMD ["sh", "-c", "./entrypoint.sh"]

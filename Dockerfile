@@ -58,5 +58,6 @@ RUN php artisan optimize
 # 10️⃣ Exponer puerto de la app
 EXPOSE 9000
 
+RUN chmod +x entrypoint.sh
 # 11️⃣ CMD seguro en formato JSON
 ENTRYPOINT ["./entrypoint.sh"]

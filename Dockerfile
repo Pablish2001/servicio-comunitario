@@ -59,4 +59,4 @@ RUN php artisan optimize
 EXPOSE 9000
 
 # 11️⃣ CMD seguro en formato JSON
-CMD ["sh", "-c", "./entrypoint.sh"]
+ENTRYPOINT ["./entrypoint.sh"]

@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\ServiceProvider;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\URL;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -22,6 +23,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+                // 🔒 Forzar HTTPS en producción
+        if (config('app.env') === 'production') {
+            URL::forceScheme('https');
+        }
         Inertia::share([
             'auth' => function () {
                 $user = Auth::user();

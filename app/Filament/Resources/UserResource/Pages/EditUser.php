@@ -46,7 +46,7 @@ class EditUser extends EditRecord
         return $data;
     }
 
-    protected function getHeaderActions(): array
+    /* protected function getHeaderActions(): array
     {
         return [
             Actions\Action::make('deleteWithPersona')
@@ -70,7 +70,7 @@ class EditUser extends EditRecord
                     $this->redirect(UserResource::getUrl('index'));
                 }),
         ];
-    }
+    } */
 
     protected function getRedirectUrl(): string
     {

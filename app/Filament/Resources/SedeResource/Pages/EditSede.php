@@ -10,12 +10,6 @@ class EditSede extends EditRecord
 {
     protected static string $resource = SedeResource::class;
 
-    protected function getHeaderActions(): array
-    {
-        return [
-            Actions\DeleteAction::make(),
-        ];
-    }
 
     protected function getRedirectUrl(): string
     {

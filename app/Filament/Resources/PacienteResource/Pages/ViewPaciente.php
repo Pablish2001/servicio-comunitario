@@ -25,29 +25,5 @@ class ViewPaciente extends ViewRecord
         return $data;
     }
 
-    protected function getHeaderActions(): array
-    {
-        return [
-            Actions\Action::make('deleteWithPersona')
-                ->label('Eliminar Paciente')
-                ->color('danger')
-                ->requiresConfirmation()
-                ->authorize(fn () => true)
-                ->action(function () {
-                    if ($this->record->persona) {
-                        $this->record->persona->delete();
-                    }
-
-                    $this->record->delete();
-
-                    Notification::make()
-                        ->success()
-                        ->title('Paciente eliminado')
-                        ->body('El paciente y su persona asociada han sido eliminados correctamente.')
-                        ->send();
-
-                    $this->redirect(PacienteResource::getUrl('index'));
-                }),
-        ];
-    }
+    
 }

@@ -34,7 +34,9 @@ class DonacionResource extends Resource
                 Tables\Columns\TextColumn::make('data')->label('Fecha')->date(),
                 Tables\Columns\TextColumn::make('nombre_articulo')->label('Artículo')->searchable(),
                 Tables\Columns\TextColumn::make('tipo')->label('Tipo')->badge(),
+                Tables\Columns\TextColumn::make('sede.nombre')->label('Sede')
             ])
+
             ->filters([
                 //
             ])
@@ -44,6 +46,11 @@ class DonacionResource extends Resource
             ->bulkActions([
                 //
             ]);
+    }
+    
+        public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()->with('sede');
     }
 
     public static function getRelations(): array

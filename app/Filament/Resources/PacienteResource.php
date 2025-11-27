@@ -22,21 +22,21 @@ class PacienteResource extends Resource
         return $form->schema([
             Forms\Components\Section::make('Datos de Persona')
                 ->schema([
-                    Forms\Components\TextInput::make('nombre')->disabled(),
-                    Forms\Components\TextInput::make('apellido')->disabled(),
-                    Forms\Components\TextInput::make('email')->email()->disabled(),
-                    Forms\Components\TextInput::make('contacto')->disabled(),
+                    Forms\Components\TextInput::make('nombre'),
+                    Forms\Components\TextInput::make('apellido'),
+                    Forms\Components\TextInput::make('email')->email(),
+                    Forms\Components\TextInput::make('contacto'),
                     Forms\Components\Select::make('genero')->options([
                         'masculino' => 'Masculino',
                         'femenino' => 'Femenino',
-                    ])->disabled(),
+                    ]),
                 ]),
             Forms\Components\Section::make('Datos de Paciente')
                 ->schema([
-                    Forms\Components\TextInput::make('cedula')->disabled(),
-                    Forms\Components\DatePicker::make('fecha_nacimiento')->disabled(),
-                    Forms\Components\TextInput::make('contacto')->disabled(),
-                    Forms\Components\TextInput::make('carrera')->disabled(),
+                    Forms\Components\TextInput::make('cedula'),
+                    Forms\Components\DatePicker::make('fecha_nacimiento'),
+                    Forms\Components\TextInput::make('contacto'),
+                    Forms\Components\TextInput::make('carrera'),
                 ]),
         ]);
     }

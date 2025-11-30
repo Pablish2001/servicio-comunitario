@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import AppLayout from '@/layouts/app-layout';
-import { Head, router, usePage } from '@inertiajs/react';
+import { router, usePage } from '@inertiajs/react';
 import { Calendar, Clock, Eye, FileText, Search, User, X } from 'lucide-react';
 import { useState } from 'react';
 interface Atencion {
@@ -90,27 +90,21 @@ export default function HistorialPacientes() {
 
     return (
         <AppLayout>
-            <Head title="Historial de Pacientes" />
+            <div className="min-h-screen w-full bg-[#BEE5FA] px-4 pt-24 pb-10 sm:px-6 md:px-10 lg:px-16">
+                <div className="mx-auto max-w-7xl space-y-6">
+                    {/* ------- TARJETA PRINCIPAL DE BUSQUEDA ------- */}
+                    <div className="w-full rounded-xl bg-white p-6 shadow-lg">
+                        {/* Header */}
+                        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                            <h2 className="text-center text-lg font-bold text-gray-800 sm:text-left">Historial de Pacientes</h2>
 
-            <div className="fixed inset-0 flex bg-[#BEE5FA] p-6" style={{ marginTop: '80px' }}>
-                <div className="flex h-full w-full justify-center overflow-y-auto">
-                    {/* Tarjeta principal */}
-                    <div className="relative mr-4 max-h-60 max-w-100 rounded-lg bg-white p-6 shadow-lg">
-                        {/* Header con título, campo de fecha y botón cerrar */}
-                        <div className="mb-4 flex items-center gap-3">
-                            <h2 className="flex-shrink-0 text-lg font-bold text-gray-800">Historial de Pacientes</h2>
-
-                            {/* Campo de fecha en el header */}
-                            <div className="flex items-center gap-1">
-                                {/* <Calendar className="h-4 w-4 flex-shrink-0 text-gray-400" /> */}
+                            <div className="flex w-full items-center gap-3 sm:w-auto">
                                 <Input
                                     type="date"
                                     value={fecha}
                                     onChange={(e) => setFecha(e.target.value)}
-                                    className="w-full min-w-0 justify-end rounded border-gray-300 px-3 py-1 focus:border-transparent focus:ring-1 focus:ring-blue-500 dark:text-black"
-                                    onKeyPress={(e) => e.key === 'Enter' && handleBuscar()}
+                                    className="w-full cursor-pointer rounded border-gray-300 py-2 focus:ring-blue-500 dark:text-black"
                                 />
-
                                 <button
                                     onClick={() => {
                                         setCedula('');
@@ -121,97 +115,78 @@ export default function HistorialPacientes() {
                                         setExpandedAtenciones(new Set());
                                         setBusquedaPorFecha(false);
                                     }}
-                                    className="mr-4 flex-shrink-0 cursor-pointer text-gray-600 hover:text-gray-800"
+                                    className="cursor-pointer text-gray-600 hover:text-gray-800"
                                 >
-                                    <X className="h-4 w-4" />
+                                    <X className="h-5 w-5" />
                                 </button>
                             </div>
                         </div>
 
-                        {/* Línea separadora */}
-                        <div className="mb-6 border-b border-gray-200"></div>
+                        <div className="my-4 border-b"></div>
 
-                        {/* Campo de búsqueda por cédula */}
-                        <div className="relative mx-10 mb-6">
-                            <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 transform text-gray-400" />
+                        {/* Cedula */}
+                        <div className="relative">
+                            <Search className="absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2 text-gray-400" />
                             <Input
                                 type="number"
                                 placeholder="Ingrese la cédula"
                                 value={cedula}
                                 onChange={(e) => setCedula(e.target.value)}
-                                className="rounded-lg border-0 bg-white py-3 pr-4 pl-10 shadow-sm focus:border-transparent focus:ring-2 focus:ring-blue-500 dark:text-black"
+                                className="w-full rounded-lg py-3 pl-12 shadow-sm focus:ring-2 focus:ring-blue-500 dark:text-black"
                                 onKeyPress={(e) => e.key === 'Enter' && handleBuscar()}
                             />
                         </div>
 
-                        {/* Botón de búsqueda */}
                         <Button
                             onClick={handleBuscar}
                             disabled={loading}
-                            className="flex w-full items-center justify-center gap-2 rounded-lg px-6 py-3 font-bold text-white shadow-lg transition-all duration-200 hover:scale-105 hover:shadow-xl"
-                            style={{
-                                backgroundColor: '#00D100',
-                            }}
+                            className="mt-4 flex w-full items-center justify-center gap-2 rounded-lg py-3 font-bold text-white shadow-md"
+                            style={{ backgroundColor: '#00D100' }}
                         >
-                            <Search className="h-4 w-4" />
-                            {loading ? 'Buscando...' : 'BUSCAR'}
+                            <Search className="h-5 w-5" /> {loading ? 'Buscando...' : 'BUSCAR'}
                         </Button>
                     </div>
 
-                    {/* Pacientes recientes */}
-
-                    {!loading && pacientesRecientes && pacientesRecientes.length > 0 && !atenciones.length && !error && !busquedaPorFecha && (
-                        <div className="flex max-h-105 flex-col rounded-lg bg-white p-6 shadow-lg">
-                            <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold text-gray-700">
-                                <Clock className="h-4 w-4" />
+                    {/* ------- PACIENTES RECIENTES ------- */}
+                    {!loading && pacientesRecientes?.length > 0 && !atenciones.length && !error && !busquedaPorFecha && (
+                        <div className="w-full rounded-xl bg-white p-6 shadow-lg">
+                            <h3 className="mb-4 flex items-center gap-2 font-semibold text-gray-700">
+                                <Clock className="h-5 w-5" />
                                 Últimos pacientes atendidos
                             </h3>
-                            <div className="space-y-2 overflow-auto">
-                                {pacientesRecientes.map((paciente: any, index: number) => (
-                                    <div
-                                        key={paciente.id}
-                                        className="flex items-center justify-between rounded-lg bg-gray-50 p-3"
-                                        style={{ maxHeight: '20vh', overflow: 'hidden' }}
-                                    >
-                                        <div className="rounded-lg border border-gray-200 p-4">
-                                            <div className="flex items-start justify-between">
-                                                <div className="flex-1">
-                                                    <h4 className="mb-3 font-semibold text-gray-800">
-                                                        {paciente.paciente_nombre}
-                                                        <span className="ml-2 text-sm font-normal text-gray-500">C.I: {paciente.cedula}</span>
-                                                    </h4>
 
-                                                    <div className="grid grid-cols-1 gap-3 text-sm text-gray-600 md:grid-cols-2">
-                                                        <div className="flex items-center gap-2">
-                                                            <Calendar className="h-4 w-4 text-gray-400" />
-                                                            <span>{paciente.fecha}</span>
-                                                        </div>
+                            <div className="max-h-[60vh] space-y-4 overflow-y-auto pr-2">
+                                {pacientesRecientes.map((paciente: any) => (
+                                    <div key={paciente.id} className="rounded border bg-gray-50 p-4">
+                                        <div className="flex flex-col justify-between gap-4 lg:flex-row">
+                                            <div className="flex-1">
+                                                <h4 className="font-semibold text-gray-800">
+                                                    {paciente.paciente_nombre}
+                                                    <span className="ml-2 text-sm text-gray-500">C.I: {paciente.cedula}</span>
+                                                </h4>
 
-                                                        <div className="flex items-center gap-2">
-                                                            <Clock className="h-4 w-4 text-gray-400" />
-                                                            <span>{paciente.hora}</span>
-                                                        </div>
-
-                                                        <div className="flex items-center gap-2">
-                                                            <User className="h-4 w-4 text-gray-400" />
-                                                            <span>Atendido por: {paciente.atendido_por}</span>
-                                                        </div>
-
-                                                        <div className="flex items-center gap-2">
-                                                            <FileText className="h-4 w-4 text-gray-400" />
-                                                            <span>Diagnóstico: {paciente.diagnostico}</span>
-                                                        </div>
+                                                <div className="mt-3 grid grid-cols-1 gap-3 text-sm text-gray-600 sm:grid-cols-2">
+                                                    <div className="flex items-center gap-2">
+                                                        <Calendar className="h-4 w-4 text-gray-400" /> {paciente.fecha}
+                                                    </div>
+                                                    <div className="flex items-center gap-2">
+                                                        <Clock className="h-4 w-4 text-gray-400" /> {paciente.hora}
+                                                    </div>
+                                                    <div className="flex items-center gap-2">
+                                                        <User className="h-4 w-4 text-gray-400" /> {paciente.atendido_por}
+                                                    </div>
+                                                    <div className="flex items-center gap-2">
+                                                        <FileText className="h-4 w-4 text-gray-400" /> {paciente.diagnostico}
                                                     </div>
                                                 </div>
-
-                                                <button
-                                                    onClick={() => router.visit(`/detalle-atencion/${paciente.id}`)}
-                                                    className="flex cursor-pointer items-center gap-1 text-sm font-medium text-blue-600 transition-colors duration-200 hover:text-blue-800"
-                                                >
-                                                    <Eye className="h-4 w-4" />
-                                                    Ver detalles
-                                                </button>
                                             </div>
+
+                                            <button
+                                                onClick={() => router.visit(`/detalle-atencion/${paciente.id}`)}
+                                                className="flex cursor-pointer items-center gap-2 font-medium text-blue-600 hover:text-blue-800"
+                                            >
+                                                <Eye className="h-4 w-4" /> Ver detalles
+                                            </button>
                                         </div>
                                     </div>
                                 ))}
@@ -219,34 +194,16 @@ export default function HistorialPacientes() {
                         </div>
                     )}
 
-                    {/* Resultados de la búsqueda */}
-                    {error && (
-                        <div className="max-h-15 rounded-lg border border-red-200 bg-red-50 p-4">
-                            <p className="text-center text-red-600">{error}</p>
-                        </div>
-                    )}
-                    {loading && (
-                        <div className="max-h-15 w-120 rounded-lg border border-yellow-200 bg-yellow-50 p-4">
-                            <p className="text-center text-yellow-600"> Cargando... </p>
-                        </div>
-                    )}
+                    {/* ------- MENSAJES DE ERROR / EMPTY ------- */}
+                    {error && <div className="rounded-lg border bg-red-50 p-4 text-center text-red-600">{error}</div>}
 
-                    {!loading && atenciones.length === 0 && busquedaPorFecha && (
-                        <div className="max-h-15 rounded-lg border border-yellow-200 bg-yellow-50 p-4">
-                            <p className="text-center text-yellow-600">No se encontraron atenciones para esta fecha.</p>
-                        </div>
-                    )}
+                    {loading && <div className="rounded-lg border bg-yellow-50 p-4 text-center text-yellow-600">Cargando...</div>}
 
-                    {!loading && !error && !busquedaPorFecha && pacientesRecientes.length === 0 && (
-                        <div className="max-h-15 rounded-lg border border-yellow-200 bg-yellow-50 p-4">
-                            <p className="text-center text-yellow-600">No existen registros por ahora.</p>
-                        </div>
-                    )}
-
+                    {/* ------- LISTA DE ATENCIONES ------- */}
                     {!loading && atenciones.length > 0 && (
-                        <div className="flex max-h-100 flex-col rounded-lg bg-white p-6 shadow-lg">
-                            {/* Título dinámico según el tipo de búsqueda */}
-                            <div className="mb-6 border-b border-gray-200 pb-4">
+                        <div className="w-full rounded-xl bg-white p-6 shadow-lg">
+                            {/* Header */}
+                            <div className="mb-6 border-b pb-4">
                                 <h3 className="text-lg font-bold text-gray-800">
                                     {busquedaPorFecha
                                         ? `Atenciones del ${new Date(fecha).toLocaleDateString('es-ES', {
@@ -258,52 +215,41 @@ export default function HistorialPacientes() {
                                         : `Historial de ${paciente?.nombre}`}
                                 </h3>
                                 <p className="text-sm text-gray-600">
-                                    {busquedaPorFecha
-                                        ? `${atenciones.length} paciente${atenciones.length !== 1 ? 's' : ''} atendido${atenciones.length !== 1 ? 's' : ''}`
-                                        : `${atenciones.length} atención${atenciones.length !== 1 ? 'es' : ''} registrada${atenciones.length !== 1 ? 's' : ''}`}
+                                    {busquedaPorFecha ? `${atenciones.length} paciente(s)` : `${atenciones.length} atención(es)`}
                                 </p>
                             </div>
 
-                            {/* Historial de atenciones */}
-                            <div className="space-y-4 overflow-auto">
-                                {atenciones.map((atencion, index) => (
-                                    <div key={atencion.id} className="rounded-lg border border-gray-200 p-4 transition-colors hover:bg-gray-50">
-                                        <div className="flex items-start justify-between">
+                            <div className="max-h-[65vh] space-y-4 overflow-y-auto pr-2">
+                                {atenciones.map((atencion) => (
+                                    <div key={atencion.id} className="rounded border bg-gray-50 p-4">
+                                        <div className="flex flex-col justify-between gap-4 lg:flex-row">
                                             <div className="flex-1">
-                                                <h4 className="mb-3 font-semibold text-gray-800">
+                                                <h4 className="font-semibold text-gray-800">
                                                     {atencion.paciente_nombre}
-                                                    <span className="ml-2 text-sm font-normal text-gray-500">C.I: {atencion.cedula}</span>
+                                                    <span className="ml-2 text-sm text-gray-500">C.I: {atencion.cedula}</span>
                                                 </h4>
 
-                                                <div className="grid grid-cols-1 gap-3 text-sm text-gray-600 md:grid-cols-2">
+                                                <div className="mt-3 grid grid-cols-1 gap-3 text-sm text-gray-600 sm:grid-cols-2">
                                                     <div className="flex items-center gap-2">
-                                                        <Calendar className="h-4 w-4 text-gray-400" />
-                                                        <span>{atencion.fecha}</span>
+                                                        <Calendar className="h-4 w-4 text-gray-400" /> {atencion.fecha}
                                                     </div>
-
                                                     <div className="flex items-center gap-2">
-                                                        <Clock className="h-4 w-4 text-gray-400" />
-                                                        <span>{atencion.hora}</span>
+                                                        <Clock className="h-4 w-4 text-gray-400" /> {atencion.hora}
                                                     </div>
-
                                                     <div className="flex items-center gap-2">
-                                                        <User className="h-4 w-4 text-gray-400" />
-                                                        <span>Atendido por: {atencion.atendido_por}</span>
+                                                        <User className="h-4 w-4 text-gray-400" /> {atencion.atendido_por}
                                                     </div>
-
                                                     <div className="flex items-center gap-2">
-                                                        <FileText className="h-4 w-4 text-gray-400" />
-                                                        <span>Diagnóstico: {atencion.diagnostico}</span>
+                                                        <FileText className="h-4 w-4 text-gray-400" /> {atencion.diagnostico}
                                                     </div>
                                                 </div>
                                             </div>
 
                                             <button
                                                 onClick={() => router.visit(`/detalle-atencion/${atencion.id}`)}
-                                                className="flex cursor-pointer items-center gap-1 text-sm font-medium text-blue-600 transition-colors duration-200 hover:text-blue-800"
+                                                className="flex items-center gap-2 font-medium text-blue-600 hover:text-blue-800"
                                             >
-                                                <Eye className="h-4 w-4" />
-                                                Ver detalles
+                                                <Eye className="h-4 w-4" /> Ver detalles
                                             </button>
                                         </div>
                                     </div>
